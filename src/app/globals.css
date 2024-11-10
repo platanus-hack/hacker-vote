@@ -1,9 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Oxanium:wght@400;700&display=swap');
 
 @layer base {
   :root {
+    --font-jetbrains-mono: 'JetBrains Mono', monospace;
+    --font-oxanium: 'Oxanium', cursive;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -55,5 +58,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-jetbrains-mono);
   }
 }

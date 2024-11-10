@@ -10,6 +10,11 @@ module.exports = {
       screens: { '2xl': '1400px' },
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-jetbrains-mono)', 'monospace'], // Por defecto en todo
+        'jetbrains-mono': ['var(--font-jetbrains-mono)', 'monospace'],
+        oxanium: ['var(--font-oxanium)', 'cursive'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
