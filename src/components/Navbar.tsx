@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className="flex-1 text-right">
-          <p className="font-oxanium text-sm">Username</p>
+          <p className="text-sm">Username</p>
         </div>
       </div>
     </nav>
