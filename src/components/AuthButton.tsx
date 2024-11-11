@@ -1,40 +1,56 @@
-import Link from 'next/link'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { createServerClient } from '@/utils/supabase'
+'use client'
 
-export default async function AuthButton() {
-  const cookieStore = cookies()
-  const supabase = createServerClient(cookieStore)
+import { createBrowserClient } from '@/utils/supabase'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+export default function AuthButton() {
+  const router = useRouter()
+  const supabase = createBrowserClient()
+  const [user, setUser] = useState<any>(null)
 
-  const signOut = async () => {
-    'use server'
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      setUser(user)
+    }
 
-    const cookieStore = cookies()
-    const supabase = createServerClient(cookieStore)
+    getUser()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [supabase])
+
+  const handleSignOut = async () => {
     await supabase.auth.signOut()
-    return redirect('/login')
+    router.refresh()
   }
 
   return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
-      <form action={signOut}>
-        <button className="bg-btn-background hover:bg-btn-background-hover rounded-md px-4 py-2 no-underline">
-          Logout
-        </button>
-      </form>
+    <div className="flex w-full items-center justify-between">
+      <span>{user.email}</span>
+      <button
+        onClick={handleSignOut}
+        className="bg-btn-background hover:bg-btn-background-hover rounded-md px-4 py-2 no-underline"
+      >
+        Logout
+      </button>
     </div>
   ) : (
-    <Link
-      href="/login"
-      className="bg-btn-background hover:bg-btn-background-hover flex rounded-md px-3 py-2 no-underline"
-    >
-      Login
-    </Link>
+    <div className="flex w-full justify-end">
+      <button
+        onClick={() => router.push('/login')}
+        className="bg-btn-background hover:bg-btn-background-hover rounded-md px-4 py-2 no-underline"
+      >
+        Login
+      </button>
+    </div>
   )
 }
