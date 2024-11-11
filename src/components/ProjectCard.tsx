@@ -8,20 +8,20 @@ const ProjectCard = ({ project }: { project: any }) => {
       />
 
       <div className="flex flex-grow flex-col justify-between px-6 py-4">
-        <h2 className="mb-4 text-center text-xl font-bold text-card-foreground dark:text-white">
+        <h2 className="mb-4 text-center font-jetbrains-mono text-xl text-gray-900 dark:text-white">
           {project.project_name}
         </h2>
 
         <div className="flex items-center justify-between gap-x-4">
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-bold text-white hover:bg-primary-foreground"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-jetbrains-mono text-white hover:bg-primary-foreground"
             title="Me gusta"
           >
             👍
           </button>
           <a
             href={`/projects/${project.id}`}
-            className="rounded bg-secondary px-4 py-2 font-bold text-white hover:bg-secondary-foreground"
+            className="rounded bg-secondary px-4 py-2 font-jetbrains-mono text-white hover:bg-secondary-foreground"
           >
             Details
           </a>

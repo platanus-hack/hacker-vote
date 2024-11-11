@@ -26,8 +26,8 @@ const Navbar: React.FC = () => {
   }, [index])
 
   return (
-    <nav className="fixed left-0 top-0 z-50 flex h-16 w-full items-center bg-background text-foreground">
-      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8">
+    <nav className="left-0 top-0 flex h-16 w-full items-center bg-background px-6 text-foreground sm:px-10 lg:px-16">
+      <div className="flex w-full items-center justify-between">
         <div className="flex-1">
           <a href="/" target="_blank" rel="noopener noreferrer">
             <Image
@@ -39,7 +39,6 @@ const Navbar: React.FC = () => {
             />
           </a>
         </div>
-
         <div className="flex-1 text-center">
           <p className="font-jetbrains-mono text-xl">
             {animatedText}
@@ -52,7 +51,6 @@ const Navbar: React.FC = () => {
             </span>
           </p>
         </div>
-
         <div className="flex-1 text-right">
           <p className="text-sm">Username</p>
         </div>
