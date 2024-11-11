@@ -3,6 +3,7 @@ import Footer from '@/components/Footer'
 import ProjectGrid from '@/components/ProjectGrid'
 import { createServerClient } from '@/utils/supabase'
 import { cookies } from 'next/headers'
+import Head from 'next/head'
 
 export default async function Index() {
   const cookieStore = cookies()
@@ -15,32 +16,42 @@ export default async function Index() {
   }
 
   return (
-    <main className="flex w-full flex-col bg-background text-foreground">
-      {/* Navbar */}
-      <Navbar />
+    <>
+      <Head>
+        <title>Voting Platform - Home</title>
+        <meta property="og:title" content="Voting Platform" />
+        <meta property="og:description" content="made with 💛 by 🍌" />
+        <meta
+          property="og:image"
+          content="https://raw.githubusercontent.com/rafafdz/platanus-hack-landing/main/public/platanus-logo-horizontal.svg"
+        />
+        <meta property="og:url" content="https://vote.hack.platan.us" />
+        <meta property="og:type" content="website" />
+      </Head>
 
-      {/* Contenido Principal */}
-      <div className="w-full flex-grow">
-        <section className="mx-auto w-full max-w-7xl px-6 py-12">
-          <h1 className="mb-8 text-center font-jetbrains-mono text-3xl">
-            Proyectos Destacados
-          </h1>
+      <main className="flex w-full flex-col bg-background text-foreground">
+        <Navbar />
 
-          {projects ? (
-            <ProjectGrid projects={projects} />
-          ) : (
-            <p className="text-center text-muted-foreground">
-              No se pudieron cargar los proyectos. Intenta más tarde.
-            </p>
-          )}
-        </section>
-      </div>
+        <div className="w-full flex-grow">
+          <section className="mx-auto w-full max-w-7xl px-6 py-12">
+            <h1 className="mb-8 text-center font-jetbrains-mono text-3xl">
+              Proyectos Destacados
+            </h1>
 
-      {/* Espaciado Adicional */}
-      <div className="h-20"></div>
+            {projects ? (
+              <ProjectGrid projects={projects} />
+            ) : (
+              <p className="text-center text-muted-foreground">
+                No se pudieron cargar los proyectos. Intenta más tarde.
+              </p>
+            )}
+          </section>
+        </div>
 
-      {/* Footer */}
-      <Footer />
-    </main>
+        <div className="h-20"></div>
+
+        <Footer />
+      </main>
+    </>
   )
 }
