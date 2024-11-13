@@ -1,0 +1,112 @@
+{
+  "projects": [
+    {
+      "project_id": 1,
+      "project_name": "NextJS Portfolio",
+      "logo_url": "/projects/portfolio.webp",
+      "oneliner": "Personal portfolio built with Next.js and Supabase",
+      "description": "A modern portfolio website showcasing my projects and skills, built with Next.js 14, TypeScript, and Supabase for authentication and data storage.",
+      "demo_url": "https://youtu.be/demo1",
+      "created_at": "2024-01-15"
+    },
+    {
+      "project_id": 2,
+      "project_name": "AI Chat Assistant",
+      "logo_url": "/projects/chatbot.webp",
+      "oneliner": "Real-time chat with AI using OpenAI API",
+      "description": "An AI-powered chat application that uses OpenAI's GPT model to provide intelligent responses in real-time.",
+      "demo_url": "https://youtu.be/demo2",
+      "created_at": "2024-02-01"
+    },
+    {
+      "project_id": 3,
+      "project_name": "E-commerce Platform",
+      "logo_url": "/projects/ecommerce.webp",
+      "oneliner": "A scalable e-commerce platform",
+      "description": "A full-featured e-commerce platform built with Next.js, TypeScript, and Tailwind CSS.",
+      "demo_url": "https://youtu.be/demo3",
+      "created_at": "2024-03-01"
+    },
+    {
+      "project_id": 4,
+      "project_name": "Weather App",
+      "logo_url": "/projects/weather.webp",
+      "oneliner": "A weather forecasting app",
+      "description": "A weather app that provides real-time weather updates and forecasts using OpenWeatherMap API.",
+      "demo_url": "https://youtu.be/demo4",
+      "created_at": "2024-04-01"
+    },
+    {
+      "project_id": 5,
+      "project_name": "Task Manager",
+      "logo_url": "/projects/taskmanager.webp",
+      "oneliner": "A task management tool",
+      "description": "A task management tool to help you organize and prioritize your tasks effectively.",
+      "demo_url": "https://youtu.be/demo5",
+      "created_at": "2024-05-01"
+    },
+    {
+      "project_id": 6,
+      "project_name": "Fitness Tracker",
+      "logo_url": "/projects/fitness.webp",
+      "oneliner": "A fitness tracking app",
+      "description": "A fitness tracking app to help you monitor your workouts and track your progress.",
+      "demo_url": "https://youtu.be/demo6",
+      "created_at": "2024-06-01"
+    },
+    {
+      "project_id": 7,
+      "project_name": "Recipe App",
+      "logo_url": "/projects/recipe.webp",
+      "oneliner": "A recipe sharing app",
+      "description": "A recipe sharing app where users can share and discover new recipes.",
+      "demo_url": "https://youtu.be/demo7",
+      "created_at": "2024-07-01"
+    },
+    {
+      "project_id": 8,
+      "project_name": "Travel Blog",
+      "logo_url": "/projects/travel.webp",
+      "oneliner": "A travel blogging platform",
+      "description": "A travel blogging platform where users can share their travel experiences and tips.",
+      "demo_url": "https://youtu.be/demo8",
+      "created_at": "2024-08-01"
+    },
+    {
+      "project_id": 9,
+      "project_name": "Music Streaming",
+      "logo_url": "/projects/music.webp",
+      "oneliner": "A music streaming service",
+      "description": "A music streaming service that allows users to listen to their favorite songs and create playlists.",
+      "demo_url": "https://youtu.be/demo9",
+      "created_at": "2024-09-01"
+    },
+    {
+      "project_id": 10,
+      "project_name": "Online Store",
+      "logo_url": "/projects/store.webp",
+      "oneliner": "An online shopping platform",
+      "description": "An online shopping platform where users can browse and purchase products.",
+      "demo_url": "https://youtu.be/demo10",
+      "created_at": "2024-10-01"
+    },
+    {
+      "project_id": 11,
+      "project_name": "Language Learning",
+      "logo_url": "/projects/language.webp",
+      "oneliner": "A language learning app",
+      "description": "A language learning app that helps users learn new languages through interactive lessons.",
+      "demo_url": "https://youtu.be/demo11",
+      "created_at": "2024-11-01"
+    },
+    {
+      "project_id": 12,
+      "project_name": "Meditation App",
+      "logo_url": "/projects/meditation.webp",
+      "oneliner": "A meditation and mindfulness app",
+      "description": "A meditation and mindfulness app that provides guided meditations and relaxation techniques.",
+      "demo_url": "https://youtu.be/demo12",
+      "created_at": "2024-12-01"
+    }
+  ]
+}
