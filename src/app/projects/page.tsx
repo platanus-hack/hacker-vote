@@ -1,66 +1,103 @@
+// src/app/projects/page.tsx
 'use client'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { FiYoutube, FiCalendar } from 'react-icons/fi'
+import * as React from 'react'
 import projectsData from '../../../public/projects/projects.json'
 import Image from 'next/image'
 import { useState } from 'react'
+import { cn } from '@/utils/tailwind'
+
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('rounded-lg border bg-black text-white shadow-md', className)}
+    {...props}
+  />
+))
+Card.displayName = 'Card'
+
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('flex flex-col items-center justify-center p-10', className)}
+    {...props}
+  />
+))
+CardHeader.displayName = 'CardHeader'
+
+const CardTitle = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('text-xl font-bold text-yellow-400', className)}
+    {...props}
+  />
+))
+CardTitle.displayName = 'CardTitle'
+
+const CardDescription = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('text-md text-gray-400', className)}
+    {...props}
+  />
+))
+CardDescription.displayName = 'CardDescription'
+
+const CardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn('p-6 pt-0 text-center', className)} {...props} />
+))
+CardContent.displayName = 'CardContent'
+
+const CardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('flex justify-center p-6', className)}
+    {...props}
+  />
+))
+CardFooter.displayName = 'CardFooter'
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
 
 export default function ProjectsPage() {
   return (
     <div className="container mx-auto py-10">
-      <h1 className="mb-8 text-4xl font-bold">Projects gallery</h1>
+      <h1 className="mb-8 text-4xl font-bold text-white">Projects Gallery</h1>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projectsData.projects.map((project) => (
           <Card key={project.project_id} className="flex flex-col">
             <CardHeader>
-              <div className="flex items-center gap-4">
-                <ImageWithFallback
-                  src={project.logo_url}
-                  fallbackSrc="/projects/default.webp"
-                  alt={project.project_name}
-                  className="h-12 w-12 rounded-lg object-cover"
-                  width={48}
-                  height={48}
-                />
-                <div>
-                  <CardTitle>{project.project_name}</CardTitle>
-                  <CardDescription>{project.oneliner}</CardDescription>
-                </div>
-              </div>
+              <ImageWithFallback
+                src={project.logo_url}
+                fallbackSrc="/projects/default.webp"
+                alt={project.project_name}
+                className="h-24 w-24 rounded-full object-cover"
+                width={96}
+                height={96}
+              />
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {project.description}
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-                <FiCalendar className="h-4 w-4" />
-                <span>{new Date(project.created_at).toLocaleDateString()}</span>
-              </div>
+              <CardTitle>{project.project_name}</CardTitle>
+              <CardDescription>{project.oneliner}</CardDescription>
             </CardContent>
-            <CardFooter className="mt-auto">
-              {project.demo_url && (
-                <Button variant="outline" className="w-full" asChild>
-                  <a
-                    href={project.demo_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <FiYoutube className="h-4 w-4" />
-                    Watch Demo
-                  </a>
-                </Button>
-              )}
-            </CardFooter>
           </Card>
         ))}
       </div>
@@ -87,7 +124,7 @@ function ImageWithFallback({
       src={imgSrc}
       alt={alt}
       onError={() => setImgSrc(fallbackSrc)}
-      className="object-cover"
+      className={cn('object-cover', props.className)}
     />
   )
 }
