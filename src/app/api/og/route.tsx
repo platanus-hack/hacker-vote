@@ -1,47 +1,62 @@
-import { ImageResponse } from 'next/og'
+import { ImageResponse } from '@vercel/og'
+import { NextRequest } from 'next/server'
 
-export async function GET(req: Request) {
+export const config = {
+  runtime: 'edge',
+}
+
+async function loadGoogleFont(font: string, text: string) {
+  const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(
+    text,
+  )}`
+  const css = await (await fetch(url)).text()
+  const resource = css.match(/src: url\((.+)\) format\('(opentype|truetype)'\)/)
+
+  if (resource) {
+    const response = await fetch(resource[1])
+    if (response.status == 200) {
+      return await response.arrayBuffer()
+    }
+  }
+
+  throw new Error('failed to load font data')
+}
+
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
+  const projectName = searchParams.get('name') || 'Project Name'
   const projectLogo =
     searchParams.get('logo') || 'https://via.placeholder.com/200'
+  const projectDescription =
+    searchParams.get('description') || 'Project Description'
+  const text = 'platanus hack | voting'
 
   return new ImageResponse(
     (
       <div
         style={{
+          backgroundColor: 'white',
           height: '100%',
           width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '40px',
-          background: 'linear-gradient(135deg, #1a202c, #2d3748)',
-          color: 'white',
+          fontSize: 100,
+          fontFamily: 'Oxanium',
+          paddingTop: '100px',
+          paddingLeft: '50px',
         }}
       >
-        <div tw="flex flex-col justify-start items-start w-1/2">
-          <h2 tw="text-4xl font-bold tracking-tight mb-4">Voting Platform</h2>
-          <img
-            src="https://raw.githubusercontent.com/rafafdz/platanus-hack-landing/main/public/platanus-logo-horizontal.svg"
-            alt="Company Logo"
-            tw="w-64 h-auto"
-          />
-        </div>
-
-        <div tw="flex flex-col justify-center items-center w-1/2 font-jetbrains">
-          <img
-            src={projectLogo}
-            alt="Project Logo"
-            tw="w-48 h-48 rounded-lg mb-4 shadow-lg"
-          />
-          <h2 tw="text-3xl font-bold tracking-tight">Vote Now!</h2>
-        </div>
+        {text}
       </div>
     ),
     {
       width: 1200,
       height: 630,
+      fonts: [
+        {
+          name: 'Oxanium',
+          data: await loadGoogleFont('Oxanium', text),
+          style: 'normal',
+        },
+      ],
     },
   )
 }

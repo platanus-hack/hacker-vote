@@ -5,6 +5,60 @@ import { cookies } from 'next/headers'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
+type Project = {
+  project_name: string
+  logo_url: string | null
+  oneliner: string
+  description: string
+  demo_url: string | null
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { project_name: string }
+}) {
+  const cookieStore = cookies()
+  const supabase = createServerClient(cookieStore)
+
+  const { data: project, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('project_name', params.project_name)
+    .single()
+
+  if (!project) {
+    throw new Error('Project data is required to generate metadata')
+  }
+
+  const ogImage = `http://localhost:3000/api/og?name=${encodeURIComponent(
+    project.project_name,
+  )}&logo=${encodeURIComponent(
+    project.logo_url || '',
+  )}&description=${encodeURIComponent(project.oneliner)}`
+
+  return {
+    title: `${project.project_name} - Voting Platform`,
+    description: project.oneliner,
+    openGraph: {
+      title: `${project.project_name}`,
+      description: project.oneliner,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${project.project_name} - Voting Platform`,
+        },
+      ],
+      url: `http://localhost:3000/projects/${encodeURIComponent(
+        project.project_name,
+      )}`,
+      type: 'website',
+    },
+  }
+}
+
 export default async function ProjectPage({
   params,
 }: {
@@ -23,28 +77,11 @@ export default async function ProjectPage({
     notFound()
   }
 
-  const ogImage = `https://vote.hack.platan.us/api/og?name=${encodeURIComponent(
-    project.project_name,
-  )}&logo=${encodeURIComponent(project.logo_url || '')}`
+  console.log('Project data:', project)
+  // const metadata = await generateMetadata(project)
 
   return (
     <>
-      <Head>
-        <title>{`${project.project_name} - Voting Platform`}</title>
-        <meta
-          property="og:title"
-          content={`${project.project_name} - Voting Platform`}
-        />
-        <meta property="og:description" content={project.oneliner} />
-        <meta property="og:image" content={ogImage} />
-        <meta
-          property="og:url"
-          content={`https://vote.hack.platan.us/project/${encodeURIComponent(
-            project.project_name,
-          )}`}
-        />
-        <meta property="og:type" content="website" />
-      </Head>
       <div className="margin-0 flex min-h-screen w-full flex-col text-white">
         <Navbar />
         <main className="mx-auto w-full max-w-4xl px-6 py-12">
