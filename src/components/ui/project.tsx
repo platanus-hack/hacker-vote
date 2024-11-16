@@ -60,7 +60,7 @@ export function Project({ project }: { project: ProjectProps }) {
   const embedUrl = getYouTubeEmbedUrl(project.demo_url)
 
   return (
-    <div className="space-y-8 bg-black">
+    <div className="zinc-900 space-y-8">
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-4">
           <Avatar className="h-16 w-16">
@@ -72,7 +72,7 @@ export function Project({ project }: { project: ProjectProps }) {
               <h1 className="text-2xl font-bold">{project.project_name}</h1>
               <Badge
                 variant="outline"
-                className="hidden border-zinc-700 bg-black/40 text-white sm:inline-flex"
+                className="zinc-900/40 hidden border-zinc-700 text-white sm:inline-flex"
               >
                 {project.track}
               </Badge>
@@ -80,7 +80,7 @@ export function Project({ project }: { project: ProjectProps }) {
 
             <Badge
               variant="outline"
-              className="border-zinc-700 bg-black/40 text-white sm:hidden"
+              className="zinc-900/40 border-zinc-700 text-white sm:hidden"
             >
               {project.track}
             </Badge>
@@ -88,7 +88,7 @@ export function Project({ project }: { project: ProjectProps }) {
             <p className="max-w-xl text-zinc-400">{project.oneliner}</p>
           </div>
         </div>
-        <div className="rounded-lg border border-zinc-800 bg-black/40 p-4">
+        <div className="zinc-900/40 rounded-lg border border-zinc-800 p-4">
           <span className="text-2xl font-bold">40</span>
           <span className="ml-1 text-zinc-400">▲</span>
         </div>
@@ -115,7 +115,7 @@ export function Project({ project }: { project: ProjectProps }) {
 
       <div className="space-y-2">
         <div className="font-mono text-sm text-zinc-500">
-          12/11/18:48 @ description:
+          project {project.project_name} @ description:
         </div>
         <p className="text-justify leading-relaxed text-zinc-300">
           {project.description}

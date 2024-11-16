@@ -1,3 +1,5 @@
+'use server'
+
 import { Project } from '@/components/ui/project'
 import { createServerClient } from '@/utils/supabase'
 import { cookies } from 'next/headers'
@@ -30,10 +32,7 @@ export default async function Component({
     hackers: project.hackers.map((hacker: any) => ({
       name: hacker.full_name,
       avatar_url: hacker.github_url
-        ? `${hacker.github_url.replace(
-            'https://github.com/',
-            'https://github.com/',
-          )}.png`
+        ? `${hacker.github_url}.png`
         : '/placeholder.svg',
       github_url: hacker.github_url || '#',
       linkedin_url: hacker.linkedin_url || '#',
@@ -44,7 +43,7 @@ export default async function Component({
   }
 
   return (
-    <div className="min-h-screen bg-black p-6 text-white">
+    <div className="zinc-900 min-h-screen p-6 text-white">
       <div className="mx-auto max-w-4xl">
         <Project project={formattedProject} />
       </div>

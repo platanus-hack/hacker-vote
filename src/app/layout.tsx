@@ -53,7 +53,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ReactQueryProvider>
-            <main className="flex min-h-screen flex-col items-center bg-black">
+            <main className="zinc-900 flex min-h-screen flex-col items-center">
               {children}
               <Analytics />
             </main>

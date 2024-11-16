@@ -18,7 +18,7 @@ export function HackerCard({ hacker }: { hacker: HackerProps }) {
     : undefined
 
   return (
-    <Card className="flex items-center gap-4 border-zinc-800 bg-black/40 p-4">
+    <Card className="zinc-900/40 flex items-center gap-4 border-zinc-400 p-4">
       <Avatar className="h-10 w-10">
         {avatar_url ? (
           <AvatarImage src={avatar_url} alt={hacker.name} />
