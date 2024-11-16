@@ -105,9 +105,11 @@ export function Project({ project }: { project: ProjectProps }) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="flex flex-wrap justify-center gap-4">
         {project.hackers.map((hacker, index) => (
-          <HackerCard key={index} hacker={hacker} />
+          <div key={index} className="flex w-64 flex-col">
+            <HackerCard hacker={hacker} />
+          </div>
         ))}
       </div>
 
@@ -115,7 +117,9 @@ export function Project({ project }: { project: ProjectProps }) {
         <div className="font-mono text-sm text-zinc-500">
           12/11/18:48 @ description:
         </div>
-        <p className="leading-relaxed text-zinc-300">{project.description}</p>
+        <p className="text-justify leading-relaxed text-zinc-300">
+          {project.description}
+        </p>
       </div>
     </div>
   )

@@ -5,17 +5,26 @@ import Link from 'next/link'
 
 interface HackerProps {
   name: string
-  avatar_url: string
   github_url?: string
   linkedin_url?: string
 }
 
 export function HackerCard({ hacker }: { hacker: HackerProps }) {
+  const avatar_url = hacker.github_url
+    ? `${hacker.github_url.replace(
+        'https://github.com/',
+        'https://github.com/',
+      )}.png`
+    : undefined
+
   return (
     <Card className="flex items-center gap-4 border-zinc-800 bg-black/40 p-4">
       <Avatar className="h-10 w-10">
-        <AvatarImage src={hacker.avatar_url} alt={hacker.name} />
-        <AvatarFallback>{hacker.name.charAt(0)}</AvatarFallback>
+        {avatar_url ? (
+          <AvatarImage src={avatar_url} alt={hacker.name} />
+        ) : (
+          <AvatarFallback>{hacker.name.charAt(0)}</AvatarFallback>
+        )}
       </Avatar>
       <div className="flex flex-col">
         <span className="font-medium text-white">{hacker.name}</span>
