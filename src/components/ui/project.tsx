@@ -68,15 +68,23 @@ export function Project({ project }: { project: ProjectProps }) {
             <AvatarFallback>{project.project_name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
               <h1 className="text-2xl font-bold">{project.project_name}</h1>
               <Badge
                 variant="outline"
-                className="border-zinc-700 bg-black/40 text-white"
+                className="hidden border-zinc-700 bg-black/40 text-white sm:inline-flex"
               >
                 {project.track}
               </Badge>
             </div>
+
+            <Badge
+              variant="outline"
+              className="border-zinc-700 bg-black/40 text-white sm:hidden"
+            >
+              {project.track}
+            </Badge>
+
             <p className="max-w-xl text-zinc-400">{project.oneliner}</p>
           </div>
         </div>
