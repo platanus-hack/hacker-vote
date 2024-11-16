@@ -60,7 +60,7 @@ export function Project({ project }: { project: ProjectProps }) {
   const embedUrl = getYouTubeEmbedUrl(project.demo_url)
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-black">
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-4">
           <Avatar className="h-16 w-16">
