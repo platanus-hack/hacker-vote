@@ -1,76 +1,44 @@
-import { cookies } from 'next/headers'
-import { createServerClient } from '@/utils/supabase'
-import { notFound } from 'next/navigation'
-import Image from 'next/image'
-import { FiYoutube, FiCalendar } from 'react-icons/fi'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+'use client'
 
-export default async function ProjectPage({
-  params,
-}: {
-  params: { project_name: string }
+import { Project } from '@/components/ui/project'
+
+export default function Component({
+  project = {
+    project_name: 'My super project',
+    logo_url: '/placeholder.svg',
+    oneliner:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum.',
+    hackers: [
+      {
+        name: 'John Doe',
+        avatar_url: '/placeholder.svg',
+        github_url: '#',
+        linkedin_url: '#',
+      },
+      {
+        name: 'John Doe',
+        avatar_url: '/placeholder.svg',
+        github_url: '#',
+        linkedin_url: '#',
+      },
+      {
+        name: 'John Doe',
+        avatar_url: '/placeholder.svg',
+        github_url: '#',
+        linkedin_url: '#',
+      },
+    ],
+    demo_url: 'https://www.youtube.com/watch?v=qBRaI0ZeAf8&t=108s',
+    track: 'finanzas',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ut dignissim risus. Quisque feugiat pretium mi rutrum pharetra. Integer eget justo elit. Integer commodo feugiat lectus, vitae volutpat justo. Aenean finibus nec sapien quis aliquam. Aenean nibh lacus, dignissim facilisis sem sed, porttitor auctor nisl. Nulla diam nisi, ultricies non augue vulputate, rutrum consequat ante. In auctor, magna in placerat auctor, nulla sapien euismod orci, nec pharetra elit sem eu lectus. In accumsan nisl quis odio vehicula tincidunt. Vivamus sollicitudin ullamcorper magna, a porta orci facilisis a. Sed dictum, lorem sit amet blandit aliquet, ligula nulla viverra odio, quis lacinia mi sem non nulla. Mauris eget fermentum purus. Cras scelerisque ut nibh nec lobortis. In bibendum scelerisque metus, id vulputate justo vestibulum eu.',
+  },
 }) {
-  const cookieStore = cookies()
-  const supabase = createServerClient(cookieStore)
-  const { data: project, error } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('project_name', params.project_name)
-    .single()
-
-  if (error || !project) {
-    notFound()
-  }
-
   return (
-    <div className="container mx-auto py-10">
-      <Card className="flex flex-col">
-        <CardHeader>
-          <div className="flex items-center gap-4">
-            <Image
-              src={project.logo_url}
-              alt={project.project_name}
-              className="h-12 w-12 rounded-lg object-cover"
-              width={48}
-              height={48}
-            />
-            <div>
-              <CardTitle>{project.project_name}</CardTitle>
-              <CardDescription>{project.oneliner}</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">{project.description}</p>
-          <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-            <FiCalendar className="h-4 w-4" />
-            <span>{new Date(project.created_at).toLocaleDateString()}</span>
-          </div>
-        </CardContent>
-        <CardFooter className="mt-auto">
-          {project.demo_url && (
-            <Button variant="outline" className="w-full" asChild>
-              <a
-                href={project.demo_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2"
-              >
-                <FiYoutube className="h-4 w-4" />
-                Watch Demo
-              </a>
-            </Button>
-          )}
-        </CardFooter>
-      </Card>
+    <div className="min-h-screen bg-black p-6 text-white">
+      <div className="mx-auto max-w-4xl">
+        <Project project={project} />
+      </div>
     </div>
   )
 }
