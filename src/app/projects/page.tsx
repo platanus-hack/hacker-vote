@@ -13,7 +13,10 @@ const Card = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('rounded-lg border bg-black text-white shadow-md', className)}
+    className={cn(
+      'h-64 w-64 rounded-lg border bg-black text-white shadow-md',
+      className,
+    )} // Cambiado a w-64 h-64 para hacer la tarjeta de 250x250 píxeles
     {...props}
   />
 ))
@@ -25,7 +28,7 @@ const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('flex flex-col items-center justify-center p-10', className)}
+    className={cn('flex flex-col items-center justify-center p-4', className)} // Ajustado el padding para que la imagen encaje mejor
     {...props}
   />
 ))
@@ -37,7 +40,8 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('text-xl font-bold text-yellow-400', className)}
+    className={cn('text-2xl font-bold', className)} // Cambiado a text-3xl para hacer el título más grande
+    style={{ color: '#FFEC40' }} // Aplicar el color amarillo específico
     {...props}
   />
 ))
@@ -49,7 +53,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('text-md text-gray-400', className)}
+    className={cn('mb-6 mt-2 text-xs text-white', className)} // Cambiado a text-xs y text-white para hacer el "one liner" más pequeño y blanco, y añadido mb-6 para más espacio
     {...props}
   />
 ))
@@ -59,7 +63,7 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('p-6 pt-0 text-center', className)} {...props} />
+  <div ref={ref} className={cn('p-4 pt-0 text-center', className)} {...props} /> // Ajustado el padding para que el contenido encaje mejor
 ))
 CardContent.displayName = 'CardContent'
 
@@ -69,7 +73,7 @@ const CardFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('flex justify-center p-6', className)}
+    className={cn('flex justify-center p-4', className)} // Ajustado el padding para que el footer encaje mejor
     {...props}
   />
 ))
@@ -81,7 +85,7 @@ export default function ProjectsPage() {
   return (
     <div className="container mx-auto py-10">
       <h1 className="mb-8 text-4xl font-bold text-white">Projects Gallery</h1>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {projectsData.projects.map((project) => (
           <Card key={project.project_id} className="flex flex-col">
             <CardHeader>
@@ -89,7 +93,7 @@ export default function ProjectsPage() {
                 src={project.logo_url}
                 fallbackSrc="/projects/default.webp"
                 alt={project.project_name}
-                className="h-24 w-24 rounded-full object-cover"
+                className="h-24 w-24 rounded-full object-cover" // Ajustado a h-24 w-24 para que la imagen encaje mejor en la tarjeta de 250x250 píxeles
                 width={96}
                 height={96}
               />
