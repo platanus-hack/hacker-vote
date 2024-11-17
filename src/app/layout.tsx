@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react'
 import './globals.css'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
+import Navbar from '@/components/Navbar'
 
 const oxanium = Oxanium({
   weight: ['400', '500'],
@@ -53,6 +54,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ReactQueryProvider>
+            <Navbar />
             <main className="zinc-900 flex min-h-screen flex-col items-center">
               {children}
               <Analytics />

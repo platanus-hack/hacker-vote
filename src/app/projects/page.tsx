@@ -1,4 +1,3 @@
-// src/app/projects2/page.tsx
 import { createServerClient } from '@/utils/supabase'
 import { cookies } from 'next/headers'
 import * as React from 'react'
@@ -12,7 +11,7 @@ import {
   CardContent,
 } from '@/components/ui/card'
 
-export default async function Projects2() {
+export default async function Projects() {
   const cookieStore = cookies()
   const supabase = createServerClient(cookieStore)
   const { data: projects, error } = await supabase.from('projects').select('*')
@@ -21,7 +20,6 @@ export default async function Projects2() {
     return <div>Error: {error.message}</div>
   }
 
-  console.log(projects)
   return (
     <div className="container mx-auto py-10">
       <h1 className="mb-8 text-4xl font-bold text-white">Projects Gallery</h1>
@@ -31,7 +29,7 @@ export default async function Projects2() {
             <CardHeader>
               <Image
                 src={project.logo_url}
-                alt={project.name}
+                alt={project.name || 'Project logo'}
                 width={64}
                 height={64}
                 className="h-24 w-24 rounded-full object-cover"
