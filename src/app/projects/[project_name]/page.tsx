@@ -22,24 +22,25 @@ export default async function Component({
     .single()
 
   if (!project || error) {
+    console.error('Error fetching project:', error)
     notFound()
   }
 
   const formattedProject = {
-    project_name: project.project_name,
+    project_name: project.project_name || 'Unknown Project',
     logo_url: project.logo_url || '/placeholder.svg',
     oneliner: project.oneliner || 'No description available.',
-    hackers: project.hackers.map((hacker: any) => ({
-      name: hacker.full_name,
+    hackers: (project.hackers || []).map((hacker) => ({
+      name: hacker.full_name || 'Unknown',
       avatar_url: hacker.github_url
         ? `${hacker.github_url}.png`
         : '/placeholder.svg',
       github_url: hacker.github_url || '#',
       linkedin_url: hacker.linkedin_url || '#',
     })),
-    demo_url: project.demo_url,
-    track: project.track,
-    description: project.description,
+    demo_url: project.demo_url || '',
+    track: project.track || 'No Track',
+    description: project.description || 'No description available.',
   }
 
   return (

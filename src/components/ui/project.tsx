@@ -3,6 +3,8 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/tailwind'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { HackerCard } from '@/components/ui/hackercard'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
@@ -113,13 +115,8 @@ export function Project({ project }: { project: ProjectProps }) {
         ))}
       </div>
 
-      <div className="space-y-2">
-        <div className="font-mono text-sm text-zinc-500">
-          project {project.project_name} @ description:
-        </div>
-        <p className="text-justify leading-relaxed text-zinc-300">
-          {project.description}
-        </p>
+      <div className="prose prose-zinc prose-invert text-justify leading-relaxed text-zinc-300">
+        <Markdown remarkPlugins={[remarkGfm]}>{project.description}</Markdown>
       </div>
     </div>
   )
