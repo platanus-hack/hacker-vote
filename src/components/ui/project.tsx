@@ -1,8 +1,14 @@
+'use client'
+
 import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { createBrowserClient } from '@/utils/supabase'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/tailwind'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { HackerCard } from '@/components/ui/hackercard'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
@@ -35,6 +41,7 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 }
 
 interface ProjectProps {
+  project_id: number
   project_name: string
   logo_url: string
   oneliner: string
@@ -58,6 +65,84 @@ function getYouTubeEmbedUrl(url: string): string {
 
 export function Project({ project }: { project: ProjectProps }) {
   const embedUrl = getYouTubeEmbedUrl(project.demo_url)
+
+  const supabase = createBrowserClient()
+  const [upvotes, setUpvotes] = useState<number>(0)
+  const [user, setUser] = useState<any>(null)
+  const [hasVoted, setHasVoted] = useState(false)
+
+  useEffect(() => {
+    const fetchVotes = async () => {
+      console.log('Fetching votes for project_id:', project.project_id)
+
+      const { data: votes, error } = await supabase
+        .from('upvote')
+        .select('id')
+        .eq('project_id', project.project_id)
+
+      if (!error && votes) {
+        setUpvotes(votes.length)
+      } else if (error) {
+        console.error('Error fetching votes:', error)
+      }
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      setUser(session?.user || null)
+
+      if (session?.user) {
+        const { data: userVote, error: userVoteError } = await supabase
+          .from('upvote')
+          .select('id')
+          .eq('project_id', project.project_id)
+          .eq('user_uid', session.user.id)
+
+        if (userVoteError) {
+          console.error('Error checking user vote:', userVoteError)
+        } else if (userVote && userVote.length > 0) {
+          setHasVoted(true)
+        }
+      }
+    }
+
+    fetchVotes()
+  }, [supabase, project.project_id])
+
+  const handleVote = async () => {
+    if (!user) {
+      alert('You need to be logged in to vote.')
+      return
+    }
+
+    if (hasVoted) {
+      const { error } = await supabase
+        .from('upvote')
+        .delete()
+        .eq('project_id', project.project_id)
+        .eq('user_uid', user.id)
+
+      if (!error) {
+        setHasVoted(false)
+        setUpvotes((prev) => prev - 1)
+      } else {
+        console.error('Error deleting vote:', error)
+      }
+    } else {
+      const { error } = await supabase.from('upvote').insert({
+        project_id: project.project_id,
+        user_uid: user.id,
+      })
+
+      if (!error) {
+        setHasVoted(true)
+        setUpvotes((prev) => prev + 1)
+      } else {
+        console.error('Error inserting vote:', error)
+      }
+    }
+  }
 
   return (
     <div className="zinc-900 space-y-8">
@@ -88,9 +173,16 @@ export function Project({ project }: { project: ProjectProps }) {
             <p className="max-w-xl text-zinc-400">{project.oneliner}</p>
           </div>
         </div>
-        <div className="zinc-900/40 rounded-lg border border-zinc-800 p-4">
-          <span className="text-2xl font-bold">40</span>
-          <span className="ml-1 text-zinc-400">▲</span>
+        <div
+          className={`cursor-pointer rounded-lg border p-4 ${
+            hasVoted
+              ? 'border-green-500 text-green-500'
+              : 'border-zinc-800 text-zinc-400'
+          }`}
+          onClick={handleVote}
+        >
+          <span className="text-2xl font-bold">{upvotes}</span>
+          <span className="ml-1">▲</span>
         </div>
       </div>
 
@@ -113,13 +205,8 @@ export function Project({ project }: { project: ProjectProps }) {
         ))}
       </div>
 
-      <div className="space-y-2">
-        <div className="font-mono text-sm text-zinc-500">
-          project {project.project_name} @ description:
-        </div>
-        <p className="text-justify leading-relaxed text-zinc-300">
-          {project.description}
-        </p>
+      <div className="prose prose-zinc prose-invert text-justify leading-relaxed text-zinc-300">
+        <Markdown remarkPlugins={[remarkGfm]}>{project.description}</Markdown>
       </div>
     </div>
   )
