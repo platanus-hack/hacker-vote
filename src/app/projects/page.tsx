@@ -5,7 +5,6 @@ import Image from 'next/image'
 import {
   Card,
   CardHeader,
-  CardFooter,
   CardTitle,
   CardDescription,
   CardContent,
@@ -15,10 +14,39 @@ import Countdown from '@/components/Countdown'
 export default async function Projects() {
   const cookieStore = cookies()
   const supabase = createServerClient(cookieStore)
-  const { data: projects, error } = await supabase.from('projects').select('*')
 
-  if (error) {
-    return <div>Error: {error.message}</div>
+  // Get current user
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
+  // Get projects
+  const { data: projects, error: projectsError } = await supabase
+    .from('projects')
+    .select('*')
+
+  if (projectsError) {
+    return <div>Error: {projectsError.message}</div>
+  }
+
+  // Only get upvotes if user is authenticated
+  let projectsToShow = projects
+
+  if (user) {
+    const { data: upvotes, error: upvotesError } = await supabase
+      .from('upvote')
+      .select('project_id')
+      .eq('user_uid', user.id)
+
+    if (!upvotesError) {
+      projectsToShow = projects?.map((project) => ({
+        ...project,
+        voted:
+          upvotes?.some((upvote) => upvote.project_id === project.project_id) ||
+          false,
+      }))
+    }
   }
 
   return (
@@ -26,8 +54,13 @@ export default async function Projects() {
       <Countdown />
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {projects.map((project) => (
-          <Card key={project.id} className="flex flex-col">
+        {projectsToShow?.map((project) => (
+          <Card
+            key={project.id}
+            className="flex flex-col"
+            voted={project.voted}
+            href={`/projects/${project.project_name}`}
+          >
             <CardHeader>
               <Image
                 src={project.logo_url}
