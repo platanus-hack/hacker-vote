@@ -60,14 +60,12 @@ export default async function Component({
 
   return (
     <div className="zinc-900 flex min-h-screen flex-col">
-      {/* Navbar */}
       <nav className="flex h-16 w-full justify-center border-b border-b-foreground/10">
         <div className="flex w-full max-w-4xl items-center justify-between p-3 text-sm">
           {isSupabaseConnected && <AuthButton />}
         </div>
       </nav>
 
-      {/* Contenido principal */}
       <div className="flex flex-1 justify-center p-6">
         <div className="mx-auto max-w-4xl">
           <Project project={formattedProject} />

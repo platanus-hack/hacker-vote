@@ -75,7 +75,6 @@ export function Project({ project }: { project: ProjectProps }) {
     const fetchVotes = async () => {
       console.log('Fetching votes for project_id:', project.project_id)
 
-      // Fetch total votes using project_id
       const { data: votes, error } = await supabase
         .from('upvote')
         .select('id')
@@ -87,7 +86,6 @@ export function Project({ project }: { project: ProjectProps }) {
         console.error('Error fetching votes:', error)
       }
 
-      // Fetch user session
       const {
         data: { session },
       } = await supabase.auth.getSession()
@@ -95,7 +93,6 @@ export function Project({ project }: { project: ProjectProps }) {
       setUser(session?.user || null)
 
       if (session?.user) {
-        // Check if user has already voted
         const { data: userVote, error: userVoteError } = await supabase
           .from('upvote')
           .select('id')
@@ -115,12 +112,11 @@ export function Project({ project }: { project: ProjectProps }) {
 
   const handleVote = async () => {
     if (!user) {
-      alert('Debes iniciar sesión para votar')
+      alert('You need to be logged in to vote.')
       return
     }
 
     if (hasVoted) {
-      // Desvotar (eliminar voto)
       const { error } = await supabase
         .from('upvote')
         .delete()
@@ -131,10 +127,9 @@ export function Project({ project }: { project: ProjectProps }) {
         setHasVoted(false)
         setUpvotes((prev) => prev - 1)
       } else {
-        console.error('Error al quitar el voto:', error)
+        console.error('Error deleting vote:', error)
       }
     } else {
-      // Votar (añadir voto)
       const { error } = await supabase.from('upvote').insert({
         project_id: project.project_id,
         user_uid: user.id,
@@ -144,7 +139,7 @@ export function Project({ project }: { project: ProjectProps }) {
         setHasVoted(true)
         setUpvotes((prev) => prev + 1)
       } else {
-        console.error('Error al votar:', error)
+        console.error('Error inserting vote:', error)
       }
     }
   }
