@@ -22,7 +22,7 @@ const Card = React.forwardRef<HTMLDivElement | HTMLAnchorElement, CardProps>(
           'text-white',
           'shadow-lg',
           'transition-all duration-300 ease-in-out',
-          'hover:rotate-1 hover:scale-105',
+          'hover:scale-105', // Removed hover:rotate-1
           voted ? 'hover:border-[#FFEC40]/80' : 'hover:border-zinc-700',
           'hover:shadow-xl hover:shadow-black/20',
           href && 'cursor-pointer',
