@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@/utils/supabase'
 import { useRouter } from 'next/navigation'
+import { HiChevronDown } from 'react-icons/hi2'
 
 const Navbar = () => {
   const [user, setUser] = useState<any>(null)
@@ -56,7 +57,7 @@ const Navbar = () => {
 
   return (
     <nav className="p-4">
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="container mx-auto flex flex-col items-center justify-between gap-4 sm:flex-row">
         <div
           className="text-lg font-bold"
           style={{ fontFamily: 'var(--font-oxanium)' }}
@@ -65,7 +66,7 @@ const Navbar = () => {
             href="/"
             className="text-white transition-colors hover:text-gray-300"
           >
-            <span className="text-gray-500">platanus hack</span>{' '}
+            <span className="font-light text-white">platanus hack</span>{' '}
             <span className="text-white">| voting</span>
           </Link>
         </div>
@@ -74,9 +75,10 @@ const Navbar = () => {
             <div className="dropdown relative">
               <button
                 onClick={toggleDropdown}
-                className="text-white focus:outline-none"
+                className="flex items-center gap-2 rounded-lg border border-white px-4 py-1 text-white transition-colors hover:bg-white/10 focus:outline-none"
               >
                 {user.user_metadata.full_name}
+                <HiChevronDown className="h-4 w-4" />
               </button>
               {dropdownVisible && (
                 <div className="absolute right-0 mt-2 w-48 rounded-md bg-white py-1 shadow-lg">

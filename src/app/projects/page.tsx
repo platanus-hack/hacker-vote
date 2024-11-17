@@ -50,32 +50,36 @@ export default async function Projects() {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <Countdown />
+    <div className="container mx-auto px-4 py-10">
+      <div className="mb-8">
+        <Countdown />
+      </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {projectsToShow?.map((project) => (
-          <Card
-            key={project.id}
-            className="flex flex-col"
-            voted={project.voted}
-            href={`/projects/${project.project_name}`}
-          >
-            <CardHeader>
-              <Image
-                src={project.logo_url}
-                alt={project.name || 'Project logo'}
-                width={64}
-                height={64}
-                className="h-24 w-24 rounded-full object-cover"
-              />
-            </CardHeader>
-            <CardContent>
-              <CardTitle>{project.project_name}</CardTitle>
-              <CardDescription>{project.oneliner}</CardDescription>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="flex justify-center">
+        <div className="grid max-w-[1400px] grid-cols-1 place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {projectsToShow?.map((project) => (
+            <Card
+              key={project.id}
+              className="flex flex-col"
+              voted={project.voted}
+              href={`/projects/${project.project_name}`}
+            >
+              <CardHeader>
+                <Image
+                  src={project.logo_url}
+                  alt={project.name || 'Project logo'}
+                  width={64}
+                  height={64}
+                  className="h-24 w-24 rounded-full object-cover"
+                />
+              </CardHeader>
+              <CardContent>
+                <CardTitle>{project.project_name}</CardTitle>
+                <CardDescription>{project.oneliner}</CardDescription>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   )

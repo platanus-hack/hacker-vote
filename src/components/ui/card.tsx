@@ -22,7 +22,7 @@ const Card = React.forwardRef<HTMLDivElement | HTMLAnchorElement, CardProps>(
           'text-white',
           'shadow-lg',
           'transition-all duration-300 ease-in-out',
-          'hover:scale-105', // Removed hover:rotate-1
+          'hover:scale-105',
           voted ? 'hover:border-[#FFEC40]/80' : 'hover:border-zinc-700',
           'hover:shadow-xl hover:shadow-black/20',
           href && 'cursor-pointer',
@@ -71,6 +71,9 @@ const CardTitle = React.forwardRef<
     className={cn(
       'text-2xl font-bold',
       'transition-colors duration-300',
+      'line-clamp-2',
+      'max-w-full',
+      'overflow-hidden',
       className,
     )}
     style={{ color: '#FFEC40' }}
@@ -88,6 +91,8 @@ const CardDescription = React.forwardRef<
     className={cn(
       'mb-6 mt-2 text-xs text-white',
       'transition-colors duration-300',
+      'line-clamp-4',
+      'overflow-hidden',
       className,
     )}
     {...props}
