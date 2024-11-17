@@ -1,4 +1,8 @@
+'use client'
+
 import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { createBrowserClient } from '@/utils/supabase'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/tailwind'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -37,6 +41,7 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 }
 
 interface ProjectProps {
+  project_id: number
   project_name: string
   logo_url: string
   oneliner: string
@@ -60,6 +65,89 @@ function getYouTubeEmbedUrl(url: string): string {
 
 export function Project({ project }: { project: ProjectProps }) {
   const embedUrl = getYouTubeEmbedUrl(project.demo_url)
+
+  const supabase = createBrowserClient()
+  const [upvotes, setUpvotes] = useState<number>(0)
+  const [user, setUser] = useState<any>(null)
+  const [hasVoted, setHasVoted] = useState(false)
+
+  useEffect(() => {
+    const fetchVotes = async () => {
+      console.log('Fetching votes for project_id:', project.project_id)
+
+      // Fetch total votes using project_id
+      const { data: votes, error } = await supabase
+        .from('upvote')
+        .select('id')
+        .eq('project_id', project.project_id)
+
+      if (!error && votes) {
+        setUpvotes(votes.length)
+      } else if (error) {
+        console.error('Error fetching votes:', error)
+      }
+
+      // Fetch user session
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      setUser(session?.user || null)
+
+      if (session?.user) {
+        // Check if user has already voted
+        const { data: userVote, error: userVoteError } = await supabase
+          .from('upvote')
+          .select('id')
+          .eq('project_id', project.project_id)
+          .eq('user_uid', session.user.id)
+
+        if (userVoteError) {
+          console.error('Error checking user vote:', userVoteError)
+        } else if (userVote && userVote.length > 0) {
+          setHasVoted(true)
+        }
+      }
+    }
+
+    fetchVotes()
+  }, [supabase, project.project_id])
+
+  const handleVote = async () => {
+    if (!user) {
+      alert('Debes iniciar sesión para votar')
+      return
+    }
+
+    if (hasVoted) {
+      // Desvotar (eliminar voto)
+      const { error } = await supabase
+        .from('upvote')
+        .delete()
+        .eq('project_id', project.project_id)
+        .eq('user_uid', user.id)
+
+      if (!error) {
+        setHasVoted(false)
+        setUpvotes((prev) => prev - 1)
+      } else {
+        console.error('Error al quitar el voto:', error)
+      }
+    } else {
+      // Votar (añadir voto)
+      const { error } = await supabase.from('upvote').insert({
+        project_id: project.project_id,
+        user_uid: user.id,
+      })
+
+      if (!error) {
+        setHasVoted(true)
+        setUpvotes((prev) => prev + 1)
+      } else {
+        console.error('Error al votar:', error)
+      }
+    }
+  }
 
   return (
     <div className="zinc-900 space-y-8">
@@ -90,9 +178,16 @@ export function Project({ project }: { project: ProjectProps }) {
             <p className="max-w-xl text-zinc-400">{project.oneliner}</p>
           </div>
         </div>
-        <div className="zinc-900/40 rounded-lg border border-zinc-800 p-4">
-          <span className="text-2xl font-bold">40</span>
-          <span className="ml-1 text-zinc-400">▲</span>
+        <div
+          className={`cursor-pointer rounded-lg border p-4 ${
+            hasVoted
+              ? 'border-green-500 text-green-500'
+              : 'border-zinc-800 text-zinc-400'
+          }`}
+          onClick={handleVote}
+        >
+          <span className="text-2xl font-bold">{upvotes}</span>
+          <span className="ml-1">▲</span>
         </div>
       </div>
 
