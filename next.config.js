@@ -3,6 +3,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  images: {
+    domains: ['via.placeholder.com', 'picsum.photos'],
+  },
+}
 
 module.exports = withBundleAnalyzer(nextConfig)
