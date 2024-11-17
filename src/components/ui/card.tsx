@@ -8,7 +8,14 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      'h-64 w-64 rounded-lg border bg-black text-white shadow-md',
+      'h-64 w-64',
+      'rounded-xl border border-zinc-800',
+      'text-white',
+      'shadow-lg',
+      'transition-all duration-300 ease-in-out',
+      'hover:rotate-1 hover:scale-105',
+      'hover:border-zinc-700',
+      'hover:shadow-xl hover:shadow-black/20',
       className,
     )}
     {...props}
@@ -22,7 +29,12 @@ const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('flex flex-col items-center justify-center p-4', className)}
+    className={cn(
+      'flex flex-col items-center justify-center p-4',
+      'transition-transform duration-300',
+      'group-hover:scale-102',
+      className,
+    )}
     {...props}
   />
 ))
@@ -34,7 +46,10 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('text-2xl font-bold', className)}
+    className={cn(
+      'text-2xl font-bold transition-colors duration-300',
+      className,
+    )}
     style={{ color: '#FFEC40' }}
     {...props}
   />
@@ -47,7 +62,11 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('mb-6 mt-2 text-xs text-white', className)}
+    className={cn(
+      'mb-6 mt-2 text-xs text-white',
+      'transition-colors duration-300',
+      className,
+    )}
     {...props}
   />
 ))
@@ -57,7 +76,15 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('p-4 pt-0 text-center', className)} {...props} />
+  <div
+    ref={ref}
+    className={cn(
+      'p-4 pt-0 text-center',
+      'transition-transform duration-300',
+      className,
+    )}
+    {...props}
+  />
 ))
 CardContent.displayName = 'CardContent'
 
@@ -67,7 +94,11 @@ const CardFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('flex justify-center p-4', className)}
+    className={cn(
+      'flex justify-center p-4',
+      'transition-all duration-300',
+      className,
+    )}
     {...props}
   />
 ))

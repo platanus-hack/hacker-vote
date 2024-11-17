@@ -10,6 +10,7 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/ui/card'
+import Countdown from '@/components/Countdown'
 
 export default async function Projects() {
   const cookieStore = cookies()
@@ -22,7 +23,8 @@ export default async function Projects() {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="mb-8 text-4xl font-bold text-white">Projects Gallery</h1>
+      <Countdown />
+
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {projects.map((project) => (
           <Card key={project.id} className="flex flex-col">

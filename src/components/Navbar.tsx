@@ -70,9 +70,6 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="flex items-center space-x-4">
-          <Link href="/projects" className="text-white">
-            Projects
-          </Link>
           {user ? (
             <div className="dropdown relative">
               <button
