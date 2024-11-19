@@ -40,7 +40,7 @@ export default function Countdown() {
   return (
     <div className="mb-10 flex h-full items-center justify-center">
       <h1
-        className="text-center text-7xl font-extrabold tracking-tight lg:text-7xl"
+        className="text-center text-7xl font-extrabold tracking-tight"
         style={{ color: '#FFEC40' }}
       >
         {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{' '}
