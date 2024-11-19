@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { HackerCard } from '@/components/ui/hackercard'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import LoginModal from '@/components/LoginModal'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
@@ -70,6 +71,29 @@ export function Project({ project }: { project: ProjectProps }) {
   const [upvotes, setUpvotes] = useState<number>(0)
   const [user, setUser] = useState<any>(null)
   const [hasVoted, setHasVoted] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isVoteDeadlinePassed, setIsVoteDeadlinePassed] = useState(false)
+
+  useEffect(() => {
+    const fetchVoteDeadline = async () => {
+      const { data, error } = await supabase
+        .from('misc')
+        .select('deadline')
+        .single()
+
+      if (error) {
+        console.error('Error fetching vote deadline:', error)
+        console.error()
+        return
+      }
+
+      const deadline = new Date(data.deadline)
+      const now = new Date()
+      setIsVoteDeadlinePassed(now > deadline)
+    }
+
+    fetchVoteDeadline()
+  }, [supabase])
 
   useEffect(() => {
     const fetchVotes = async () => {
@@ -108,11 +132,11 @@ export function Project({ project }: { project: ProjectProps }) {
     }
 
     fetchVotes()
-  }, [supabase, project.project_id])
+  }, [project.project_id, supabase])
 
   const handleVote = async () => {
     if (!user) {
-      alert('You need to be logged in to vote.')
+      setIsModalOpen(true)
       return
     }
 
@@ -178,8 +202,8 @@ export function Project({ project }: { project: ProjectProps }) {
             hasVoted
               ? 'border-green-500 text-green-500'
               : 'border-zinc-800 text-zinc-400'
-          }`}
-          onClick={handleVote}
+          } ${isVoteDeadlinePassed ? 'cursor-not-allowed opacity-50' : ''}`}
+          onClick={isVoteDeadlinePassed ? undefined : handleVote}
         >
           <span className="text-2xl font-bold">{upvotes}</span>
           <span className="ml-1">▲</span>
@@ -208,6 +232,16 @@ export function Project({ project }: { project: ProjectProps }) {
       <div className="prose prose-zinc prose-invert text-justify leading-relaxed text-zinc-300">
         <Markdown remarkPlugins={[remarkGfm]}>{project.description}</Markdown>
       </div>
+      <LoginModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onLogin={async () => {
+          const {
+            data: { session },
+          } = await supabase.auth.getSession()
+          setUser(session?.user || null)
+        }}
+      />
     </div>
   )
 }
