@@ -1,93 +1,86 @@
-'use client'
-
+import { createServerClient } from '@/utils/supabase'
+import { cookies } from 'next/headers'
+import * as React from 'react'
+import Image from 'next/image'
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardContent,
 } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { FiYoutube, FiCalendar } from 'react-icons/fi'
-import projectsData from '../../../public/projects/projects.json'
-import Image from 'next/image'
-import { useState } from 'react'
+import Countdown from '@/components/Countdown'
+import { getInitialTimeLeft } from '@/components/CountdownServer'
 
-export default function ProjectsPage() {
+export default async function Projects() {
+  const cookieStore = cookies()
+  const supabase = createServerClient(cookieStore)
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
+  const { data: projects, error: projectsError } = await supabase
+    .from('projects')
+    .select('*')
+
+  if (projectsError) {
+    return <div>Error: {projectsError.message}</div>
+  }
+
+  let projectsToShow = projects
+
+  if (user) {
+    const { data: upvotes, error: upvotesError } = await supabase
+      .from('upvote')
+      .select('project_id')
+      .eq('user_uid', user.id)
+
+    if (!upvotesError) {
+      projectsToShow = projects?.map((project) => ({
+        ...project,
+        voted:
+          upvotes?.some((upvote) => upvote.project_id === project.project_id) ||
+          false,
+      }))
+    }
+  }
+
+  const initialTimeLeft = getInitialTimeLeft()
+
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="mb-8 text-4xl font-bold">Projects gallery</h1>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {projectsData.projects.map((project) => (
-          <Card key={project.project_id} className="flex flex-col">
-            <CardHeader>
-              <div className="flex items-center gap-4">
-                <ImageWithFallback
+    <div className="container mx-auto px-4 py-10">
+      <div className="mb-8">
+        <Countdown initialTimeLeft={initialTimeLeft} />
+      </div>
+
+      <div className="flex justify-center">
+        <div className="grid max-w-[1400px] grid-cols-1 place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {projectsToShow?.map((project) => (
+            <Card
+              key={project.id}
+              className="flex flex-col"
+              voted={project.voted}
+              href={`/projects/${project.project_name}`}
+            >
+              <CardHeader>
+                <Image
                   src={project.logo_url}
-                  fallbackSrc="/projects/default.webp"
-                  alt={project.project_name}
-                  className="h-12 w-12 rounded-lg object-cover"
-                  width={48}
-                  height={48}
+                  alt={project.name || 'Project logo'}
+                  width={64}
+                  height={64}
+                  className="h-24 w-24 rounded-full object-cover"
                 />
-                <div>
-                  <CardTitle>{project.project_name}</CardTitle>
-                  <CardDescription>{project.oneliner}</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {project.description}
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-                <FiCalendar className="h-4 w-4" />
-                <span>{new Date(project.created_at).toLocaleDateString()}</span>
-              </div>
-            </CardContent>
-            <CardFooter className="mt-auto">
-              {project.demo_url && (
-                <Button variant="outline" className="w-full" asChild>
-                  <a
-                    href={project.demo_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <FiYoutube className="h-4 w-4" />
-                    Watch Demo
-                  </a>
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
-        ))}
+              </CardHeader>
+              <CardContent>
+                <CardTitle>{project.project_name}</CardTitle>
+                <CardDescription>{project.oneliner}</CardDescription>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
-  )
-}
-
-function ImageWithFallback({
-  src,
-  fallbackSrc,
-  alt,
-  ...props
-}: {
-  src: string
-  fallbackSrc: string
-  alt: string
-  [key: string]: any
-}) {
-  const [imgSrc, setImgSrc] = useState(src)
-
-  return (
-    <Image
-      {...props}
-      src={imgSrc}
-      alt={alt}
-      onError={() => setImgSrc(fallbackSrc)}
-      className="object-cover"
-    />
   )
 }

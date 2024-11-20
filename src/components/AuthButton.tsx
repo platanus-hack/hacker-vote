@@ -44,13 +44,6 @@ export default function AuthButton() {
       </button>
     </div>
   ) : (
-    <div className="flex w-full justify-end">
-      <button
-        onClick={() => router.push('/login')}
-        className="bg-btn-background hover:bg-btn-background-hover rounded-md px-4 py-2 no-underline"
-      >
-        Login
-      </button>
-    </div>
+    <div className="flex w-full justify-end"></div>
   )
 }
