@@ -10,18 +10,17 @@ import {
   CardContent,
 } from '@/components/ui/card'
 import Countdown from '@/components/Countdown'
+import { getInitialTimeLeft } from '@/components/CountdownServer'
 
 export default async function Projects() {
   const cookieStore = cookies()
   const supabase = createServerClient(cookieStore)
 
-  // Get current user
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser()
 
-  // Get projects
   const { data: projects, error: projectsError } = await supabase
     .from('projects')
     .select('*')
@@ -30,7 +29,6 @@ export default async function Projects() {
     return <div>Error: {projectsError.message}</div>
   }
 
-  // Only get upvotes if user is authenticated
   let projectsToShow = projects
 
   if (user) {
@@ -49,10 +47,12 @@ export default async function Projects() {
     }
   }
 
+  const initialTimeLeft = getInitialTimeLeft()
+
   return (
     <div className="container mx-auto px-4 py-10">
       <div className="mb-8">
-        <Countdown />
+        <Countdown initialTimeLeft={initialTimeLeft} />
       </div>
 
       <div className="flex justify-center">
