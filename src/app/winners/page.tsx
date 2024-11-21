@@ -3,6 +3,8 @@ import { createServerClient } from '@/utils/supabase'
 import { cookies } from 'next/headers'
 import * as React from 'react'
 import Image from 'next/image'
+import WinnersConfetti from '@/components/WinnersConfetti'
+
 import {
   Card,
   CardHeader,
@@ -46,6 +48,7 @@ export default async function Winners() {
 
   return (
     <div className="container mx-auto px-4 py-10">
+      <WinnersConfetti />
       <h1 className="mb-8 text-center text-4xl font-bold text-white">
         Projects Ranking
       </h1>
