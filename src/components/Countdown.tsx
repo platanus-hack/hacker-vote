@@ -1,6 +1,8 @@
-// countdown.tsx
 'use client'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { TARGET_DATE } from './CountdownServer'
 
 interface TimeLeft {
   days: number
@@ -11,13 +13,18 @@ interface TimeLeft {
 
 interface CountdownProps {
   initialTimeLeft: TimeLeft
+  initialIsVotingEnded: boolean
 }
 
-export default function Countdown({ initialTimeLeft }: CountdownProps) {
+export default function Countdown({
+  initialTimeLeft,
+  initialIsVotingEnded,
+}: CountdownProps) {
   const [timeLeft, setTimeLeft] = useState(initialTimeLeft)
+  const [isVotingEnded, setIsVotingEnded] = useState(initialIsVotingEnded)
 
   useEffect(() => {
-    const targetDate = new Date('2024-11-30T23:59:59')
+    const targetDate = new Date(TARGET_DATE)
 
     const timer = setInterval(() => {
       const now = new Date()
@@ -26,6 +33,7 @@ export default function Countdown({ initialTimeLeft }: CountdownProps) {
       if (difference <= 0) {
         clearInterval(timer)
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+        setIsVotingEnded(true)
         return
       }
 
@@ -43,11 +51,22 @@ export default function Countdown({ initialTimeLeft }: CountdownProps) {
   }, [])
 
   return (
-    <div className="mb-10 flex h-full items-center justify-center">
-      <h1 className="text-center text-7xl font-extrabold tracking-tight text-[#FFEC40]">
-        {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{' '}
-        {timeLeft.seconds}s left to vote!
-      </h1>
+    <div className="mb-10 flex h-full flex-col items-center justify-center gap-8">
+      {isVotingEnded ? (
+        <Link href="/winners">
+          <Button
+            className="bg-[#FFEC40] text-black hover:bg-[#FFEC40]/90"
+            size="lg"
+          >
+            View Winners 🏆
+          </Button>
+        </Link>
+      ) : (
+        <h1 className="text-center text-7xl font-extrabold tracking-tight text-[#FFEC40]">
+          {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{' '}
+          {timeLeft.seconds}s left to vote!
+        </h1>
+      )}
     </div>
   )
 }

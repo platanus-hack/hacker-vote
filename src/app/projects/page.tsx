@@ -47,12 +47,15 @@ export default async function Projects() {
     }
   }
 
-  const initialTimeLeft = getInitialTimeLeft()
+  const { timeLeft, isVotingEnded } = getInitialTimeLeft()
 
   return (
     <div className="container mx-auto px-4 py-10">
       <div className="mb-8">
-        <Countdown initialTimeLeft={initialTimeLeft} />
+        <Countdown
+          initialTimeLeft={timeLeft}
+          initialIsVotingEnded={isVotingEnded}
+        />
       </div>
 
       <div className="flex justify-center">
