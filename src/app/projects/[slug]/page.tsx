@@ -8,7 +8,7 @@ import ThemeToggle from '@/components/ThemeToggle'
 export default async function Component({
   params,
 }: {
-  params: { project_name: string }
+  params: { slug: string }
 }) {
   const cookieStore = cookies()
   const supabase = createServerClient(cookieStore)
@@ -18,7 +18,7 @@ export default async function Component({
     .select(
       'project_id, project_name, logo_url, oneliner, description, demo_url, track, hackers(full_name, github_url, linkedin_url)',
     )
-    .eq('project_name', params.project_name)
+    .eq('slug', params.slug)
     .single()
 
   if (!project || error) {

@@ -15,16 +15,16 @@ const defaultUrl = process.env.VERCEL_URL
 export default async function opengraphImage({
   params,
 }: {
-  params: Promise<{ project_name: string }>
+  params: Promise<{ slug: string }>
 }) {
-  const project_name = (await params).project_name
+  const slug = (await params).slug
 
-  console.log('Fetching project for project_name:', project_name)
+  console.log('Fetching project for slug:', slug)
 
   const { data: project, error: projectError } = await supabase
     .from('projects')
     .select('project_name, oneliner, logo_url, project_id')
-    .eq('project_name', project_name)
+    .eq('slug', slug)
     .single()
 
   if (projectError || !project) {
