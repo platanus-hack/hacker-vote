@@ -123,15 +123,28 @@ export function Project({ project }: { project: ProjectProps }) {
           .eq('project_id', project.project_id)
           .eq('user_uid', session.user.id)
 
-        if (userVoteError) {
-          console.error('Error checking user vote:', userVoteError)
-        } else if (userVote && userVote.length > 0) {
+        if (!userVoteError && userVote && userVote.length > 0) {
           setHasVoted(true)
+        } else {
+          setHasVoted(false)
         }
       }
     }
 
     fetchVotes()
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user || null)
+        if (!session?.user) {
+          setHasVoted(false)
+        }
+      },
+    )
+
+    return () => {
+      authListener?.subscription.unsubscribe()
+    }
   }, [project.project_id, supabase])
 
   const handleVote = async () => {

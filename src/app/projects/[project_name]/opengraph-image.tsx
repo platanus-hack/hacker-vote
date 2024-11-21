@@ -47,7 +47,6 @@ export default async function opengraphImage({
 
   const jsx = (
     <article tw="h-full w-full flex flex-col justify-between bg-zinc-900 text-white p-8 font-mono">
-      {/* Header */}
       <header tw="flex items-center justify-between mb-12">
         <h1 tw="text-5xl flex items-center gap-2">
           platanus hack <span tw="text-gray-400">|</span>{' '}
@@ -56,7 +55,6 @@ export default async function opengraphImage({
         <p tw="text-gray-400 text-4xl">deadline: 1.dec-23:59</p>
       </header>
 
-      {/* Main Content */}
       <section tw="flex gap-24 items-center mb-16">
         <div tw="w-64 h-64 rounded-full flex items-center justify-center flex-shrink-0 ml-8">
           {project.logo_url && (
@@ -73,7 +71,6 @@ export default async function opengraphImage({
         </div>
       </section>
 
-      {/* Footer */}
       <footer tw="flex justify-center text-gray-400 text-center">
         <p tw="text-2xl font-semibold">{hackerNames}</p>
       </footer>
