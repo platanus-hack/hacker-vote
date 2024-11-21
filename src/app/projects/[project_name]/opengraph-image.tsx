@@ -1,23 +1,29 @@
 import { ImageResponse } from 'next/og'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseKey)
 
 export const runtime = 'edge'
 
-export default async function Image({
+const defaultUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : 'http://localhost:3000'
+
+export default async function opengraphImage({
   params,
 }: {
-  params: { project_name: string }
+  params: Promise<{ project_name: string }>
 }) {
-  const { project_name } = params
+  const project_name = (await params).project_name
+
+  console.log('Fetching project for project_name:', project_name)
 
   const { data: project, error: projectError } = await supabase
     .from('projects')
-    .select('project_name, oneliner, logo_url')
+    .select('project_name, oneliner, logo_url, project_id')
     .eq('project_name', project_name)
     .single()
 
@@ -28,96 +34,58 @@ export default async function Image({
   const { data: hackers, error: hackersError } = await supabase
     .from('hackers')
     .select('full_name')
-    .eq('project_name', project_name)
+    .eq('project_id', project.project_id)
 
   if (hackersError || !hackers) {
     return new Response('Hackers not found', { status: 404 })
   }
 
-  const hackerNames = hackers.map((hacker) => hacker.full_name).join(', ')
+  const hackerNames = hackers.map((hacker) => hacker.full_name).join(' , ')
 
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          backgroundColor: 'black',
-          color: 'white',
-          width: '1200px',
-          height: '630px',
-          padding: '32px',
-          fontFamily: 'monospace',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            marginBottom: '48px',
-          }}
-        >
-          <h1 style={{ fontSize: '32px' }}>
-            platanus hack{' '}
-            <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>|</span>
-            <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>voting</span>
-          </h1>
-          <p style={{ color: 'gray' }}>deadline: 1.dec-23:59</p>
-        </div>
+  const response = await fetch(new URL('Oxanium.ttf', import.meta.url))
+  const oxanium = await response.arrayBuffer()
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '32px',
-            alignItems: 'flex-start',
-            marginBottom: '64px',
-          }}
-        >
-          <div
-            style={{
-              width: '128px',
-              height: '128px',
-              backgroundColor: 'white',
-              borderRadius: '50%',
-              flexShrink: 0,
-            }}
-          >
-            {project.logo_url && (
-              <img
-                src={project.logo_url}
-                alt="Project Logo"
-                style={{ width: '100%', height: '100%', borderRadius: '50%' }}
-              />
-            )}
-          </div>
-          <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
-          >
-            <h2 style={{ fontSize: '48px', fontWeight: '500' }}>
-              {project.project_name}
-            </h2>
-            <p style={{ color: 'gray', fontSize: '24px' }}>
-              {project.oneliner}
-            </p>
-          </div>
-        </div>
+  const jsx = (
+    <article tw="h-full w-full flex flex-col justify-between bg-zinc-900 text-white p-8 font-mono">
+      {/* Header */}
+      <header tw="flex items-center justify-between mb-12">
+        <h1 tw="text-5xl flex items-center gap-2">
+          platanus hack <span tw="text-gray-400">|</span>{' '}
+          <span tw="text-gray-400">voting</span>
+        </h1>
+        <p tw="text-gray-400 text-4xl">deadline: 1.dec-23:59</p>
+      </header>
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            color: 'gray',
-          }}
-        >
-          {hackerNames}
+      {/* Main Content */}
+      <section tw="flex gap-24 items-center mb-16">
+        <div tw="w-64 h-64 rounded-full flex items-center justify-center flex-shrink-0 ml-8">
+          {project.logo_url && (
+            <img
+              src={project.logo_url}
+              alt="Project Logo"
+              tw="w-full h-full rounded-full object-cover"
+            />
+          )}
         </div>
-      </div>
-    ),
-    {
-      width: 1200,
-      height: 630,
-    },
+        <div tw="flex flex-col gap-12 flex-grow ml-16">
+          <h2 tw="text-7xl font-medium">{project.project_name}</h2>
+          <p tw="text-gray-400 text-3xl">{project.oneliner}</p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer tw="flex justify-center text-gray-400 text-center">
+        <p tw="text-2xl font-semibold">{hackerNames}</p>
+      </footer>
+    </article>
   )
+
+  const fonts = [
+    {
+      name: 'Oxanium',
+      data: oxanium,
+    },
+  ]
+
+  return new ImageResponse(jsx, { width: 1200, height: 630, fonts })
 }
