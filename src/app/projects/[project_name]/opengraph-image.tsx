@@ -48,15 +48,15 @@ export default async function opengraphImage({
   const jsx = (
     <article tw="h-full w-full flex flex-col justify-between bg-zinc-900 text-white p-8 font-mono">
       <header tw="flex items-center justify-between mb-12">
-        <h1 tw="text-5xl flex items-center gap-2">
-          platanus hack <span tw="text-gray-400">|</span>{' '}
-          <span tw="text-gray-400">voting</span>
+        <h1 tw="text-5xl flex items-center gap-4">
+          platanus hack <span tw="text-gray-400 gap-2 ml-2">|</span>{' '}
+          <span tw="text-gray-400 ml-2">voting</span>
         </h1>
         <p tw="text-gray-400 text-4xl">deadline: 1.dec-23:59</p>
       </header>
 
-      <section tw="flex gap-24 items-center mb-16">
-        <div tw="w-64 h-64 rounded-full flex items-center justify-center flex-shrink-0 ml-8">
+      <section tw="flex gap-40 items-center mb-16 text-center">
+        <div tw="w-64 h-64 rounded-full flex items-center justify-center flex-shrink-0 ml-16">
           {project.logo_url && (
             <img
               src={project.logo_url}
@@ -65,7 +65,7 @@ export default async function opengraphImage({
             />
           )}
         </div>
-        <div tw="flex flex-col gap-12 flex-grow ml-16">
+        <div tw="flex flex-col gap-12 flex-grow ml-24">
           <h2 tw="text-7xl font-medium">{project.project_name}</h2>
           <p tw="text-gray-400 text-3xl">{project.oneliner}</p>
         </div>
