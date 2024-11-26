@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@/utils/supabase'
 import { cva, type VariantProps } from 'class-variance-authority'

@@ -1,12 +1,9 @@
 'use client'
 
 import { createBrowserClient } from '@/utils/supabase'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { FcGoogle } from 'react-icons/fc'
 
 export default function Login() {
-  const router = useRouter()
   const supabase = createBrowserClient()
 
   const handleGoogleLogin = async () => {

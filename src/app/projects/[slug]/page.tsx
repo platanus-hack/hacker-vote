@@ -2,8 +2,6 @@ import { Project } from '@/components/ui/project'
 import { createServerClient } from '@/utils/supabase'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
-import AuthButton from '@/components/AuthButton'
-import ThemeToggle from '@/components/ThemeToggle'
 
 export default async function Component({
   params,
@@ -43,17 +41,6 @@ export default async function Component({
     track: project.track || 'No Track',
     description: project.description || 'No description available.',
   }
-
-  const canInitSupabaseClient = () => {
-    try {
-      createServerClient(cookieStore)
-      return true
-    } catch (e) {
-      return false
-    }
-  }
-
-  const isSupabaseConnected = canInitSupabaseClient()
 
   return (
     <>

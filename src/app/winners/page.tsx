@@ -1,7 +1,6 @@
 // src/app/winners/page.tsx
 import { createServerClient } from '@/utils/supabase'
 import { cookies } from 'next/headers'
-import * as React from 'react'
 import Image from 'next/image'
 import WinnersConfetti from '@/components/WinnersConfetti'
 
@@ -10,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardContent,
 } from '@/components/ui/card'
 
 export default async function Winners() {
