@@ -1,22 +1,15 @@
 import { ImageResponse } from 'next/og'
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-
-export const supabase = createClient(supabaseUrl, supabaseKey)
-
-export const runtime = 'edge'
-
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000'
+import { cookies } from 'next/headers'
+import { createServerClient } from '@/utils/supabase'
 
 export default async function opengraphImage({
   params,
 }: {
   params: Promise<{ slug: string }>
 }) {
+  const cookieStore = cookies()
+  const supabase = createServerClient(cookieStore)
+
   const slug = (await params).slug
 
   console.log('Fetching project for slug:', slug)

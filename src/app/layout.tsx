@@ -21,10 +21,6 @@ const jetBrainsMono = JetBrains_Mono({
   display: 'swap',
 })
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000'
-
 export default function RootLayout({
   children,
 }: {
