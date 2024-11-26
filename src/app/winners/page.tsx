@@ -1,4 +1,3 @@
-// src/app/winners/page.tsx
 import { createServerClient } from '@/utils/supabase'
 import { cookies } from 'next/headers'
 import Image from 'next/image'
@@ -56,7 +55,7 @@ export default async function Winners() {
             key={project.id}
             variant="ranking"
             className="mb-4 flex items-center p-4 transition-transform hover:scale-105"
-            href={`/projects/${project.project_name}`}
+            href={`/projects/${project.slug}`}
           >
             <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800">
               <span className="text-2xl font-bold text-[#FFEC40]">
