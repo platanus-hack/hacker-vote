@@ -1,3 +1,4 @@
+// src/components/ui/card.tsx
 import * as React from 'react'
 import { cn } from '@/utils/tailwind'
 import Link from 'next/link'
@@ -6,18 +7,19 @@ import { HiCheckCircle } from 'react-icons/hi2'
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   voted?: boolean
   href?: string
+  variant?: 'default' | 'ranking'
 }
 
 const Card = React.forwardRef<HTMLDivElement | HTMLAnchorElement, CardProps>(
-  ({ className, voted = false, href, ...props }, ref) => {
+  ({ className, voted = false, href, variant = 'default', ...props }, ref) => {
     const Comp: React.ElementType = href ? Link : 'div'
     return (
       <Comp
         {...(href ? { href } : {})}
         ref={ref as React.Ref<HTMLDivElement & HTMLAnchorElement>}
         className={cn(
-          'relative h-64 w-64',
-          'rounded-xl border',
+          'relative rounded-xl border',
+          variant === 'default' ? 'h-64 w-64' : 'w-full',
           voted ? 'border-[#FFEC40]' : 'border-zinc-800',
           'text-white',
           'shadow-lg',
