@@ -62,7 +62,7 @@ export default async function Projects() {
               key={project.id}
               className="flex flex-col"
               voted={project.voted}
-              href={`/projects/${project.project_name}`}
+              href={`/projects/${project.slug}`}
             >
               <CardHeader>
                 <Image
