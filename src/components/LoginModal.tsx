@@ -1,6 +1,5 @@
-import { useRouter } from 'next/navigation'
-import { createBrowserClient } from '@/utils/supabase'
 import { FcGoogle } from 'react-icons/fc'
+import { handleGoogleLogin } from '@/utils/session'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -8,27 +7,7 @@ interface LoginModalProps {
   onLogin?: () => Promise<void>
 }
 
-export default function LoginModal({
-  isOpen,
-  onClose,
-  onLogin,
-}: LoginModalProps) {
-  const router = useRouter()
-  const supabase = createBrowserClient()
-
-  const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    })
-
-    if (error) {
-      console.error('Error:', error.message)
-    } else {
-      if (onLogin) await onLogin()
-      onClose()
-    }
-  }
-
+export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const handleModalClick = (e: React.MouseEvent) => {
     e.stopPropagation()
   }

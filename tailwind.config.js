@@ -15,6 +15,7 @@ module.exports = {
         oxanium: ['var(--font-oxanium)'],
       },
       colors: {
+        yellow: '#FFEC40',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

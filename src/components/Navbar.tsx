@@ -1,11 +1,11 @@
 'use client'
 
-import * as React from 'react'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@/utils/supabase'
 import { useRouter } from 'next/navigation'
 import { HiChevronDown } from 'react-icons/hi2'
+import { handleGoogleLogin } from '@/utils/session'
 
 const Navbar = () => {
   const [user, setUser] = useState<any>(null)
@@ -90,9 +90,7 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <Link href="/login" className="text-white">
-              Login
-            </Link>
+            <button onClick={handleGoogleLogin}>Login</button>
           )}
         </div>
       </div>

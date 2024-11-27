@@ -63,7 +63,7 @@ export default async function Projects() {
           {projectsToShow?.map((project) => (
             <Card
               key={project.id}
-              className="flex flex-col"
+              className="flex h-64 w-64 flex-col"
               voted={project.voted}
               href={`/projects/${project.slug}`}
             >

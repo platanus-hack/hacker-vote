@@ -55,14 +55,14 @@ export default function Countdown({
       {isVotingEnded ? (
         <Link href="/winners">
           <Button
-            className="bg-[#FFEC40] text-black hover:bg-[#FFEC40]/90"
+            className="border border-primary bg-primary text-primary-foreground hover:bg-primary/90"
             size="lg"
           >
             View Winners 🏆
           </Button>
         </Link>
       ) : (
-        <h1 className="text-center text-7xl font-extrabold tracking-tight text-[#FFEC40]">
+        <h1 className="rounded border border-yellow p-3 text-center text-3xl tracking-tight text-yellow transition-all hover:text-white">
           {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{' '}
           {timeLeft.seconds}s left to vote!
         </h1>

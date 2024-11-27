@@ -96,15 +96,15 @@ export function Project({ project }: { project: ProjectProps }) {
 
   useEffect(() => {
     const fetchVotes = async () => {
-      console.log('Fetching votes for project_id:', project.project_id)
-
       const { data: votes, error } = await supabase
-        .from('upvote')
-        .select('id')
+        .from('project_upvote_count')
+        .select('upvote_count')
         .eq('project_id', project.project_id)
 
-      if (!error && votes) {
-        setUpvotes(votes.length)
+      const upvoteData = votes?.[0]
+
+      if (!error && upvoteData) {
+        setUpvotes(upvoteData.upvote_count)
       } else if (error) {
         console.error('Error fetching votes:', error)
       }
@@ -121,6 +121,8 @@ export function Project({ project }: { project: ProjectProps }) {
           .select('id')
           .eq('project_id', project.project_id)
           .eq('user_uid', session.user.id)
+
+        console.log('userVote', userVote)
 
         if (!userVoteError && userVote && userVote.length > 0) {
           setHasVoted(true)
@@ -210,10 +212,10 @@ export function Project({ project }: { project: ProjectProps }) {
           </div>
         </div>
         <div
-          className={`cursor-pointer rounded-lg border p-4 ${
+          className={`cursor-pointer rounded-lg border p-4 transition-all duration-300 ${
             hasVoted
-              ? 'border-green-500 text-green-500'
-              : 'border-zinc-800 text-zinc-400'
+              ? 'border-yellow text-yellow'
+              : 'border-zinc-800 text-zinc-400 hover:border-yellow hover:text-yellow'
           } ${isVoteDeadlinePassed ? 'cursor-not-allowed opacity-50' : ''}`}
           onClick={isVoteDeadlinePassed ? undefined : handleVote}
         >
