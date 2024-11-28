@@ -4,12 +4,13 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@/utils/supabase'
 import { useRouter } from 'next/navigation'
-import { HiChevronDown } from 'react-icons/hi2'
+import { HiChevronDown, HiBars3, HiXMark } from 'react-icons/hi2'
 import { handleGoogleLogin } from '@/utils/session'
 
 const Navbar = () => {
   const [user, setUser] = useState<any>(null)
   const [dropdownVisible, setDropdownVisible] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const supabase = createBrowserClient()
   const router = useRouter()
 
@@ -59,23 +60,34 @@ const Navbar = () => {
     router.refresh()
   }
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen)
+    setDropdownVisible(false)
+  }
+
   return (
-    <nav className="flex justify-center py-4">
-      <div className="container flex w-full max-w-5xl justify-between">
-        <div
-          className="text-lg font-bold"
-          style={{ fontFamily: 'var(--font-oxanium)' }}
-        >
+    <nav className="relative flex justify-center py-4">
+      <div className="container flex w-full max-w-5xl items-center justify-between px-4">
+        <div className="flex-shrink-0 font-oxanium">
           <Link
             href="/"
             onClick={handleLogoClick}
-            className="text-white transition-colors hover:text-gray-300"
+            className="text-xl text-white transition-colors hover:text-yellow"
           >
-            <span className="font-light text-white">platanus hack</span>{' '}
-            <span className="text-white">| voting ☝️</span>
+            <span className="font-light">platanus hack</span>{' '}
+            <span className="font-bold">| voting ☝️</span>
           </Link>
         </div>
-        <div className="flex items-center">
+
+        <button onClick={toggleMobileMenu} className="p-2 text-white md:hidden">
+          {mobileMenuOpen ? (
+            <HiXMark className="h-6 w-6" />
+          ) : (
+            <HiBars3 className="h-6 w-6" />
+          )}
+        </button>
+
+        <div className="hidden items-center md:flex">
           {user ? (
             <div className="dropdown relative">
               <button
@@ -97,9 +109,41 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <button onClick={() => handleGoogleLogin()}>Login</button>
+            <button
+              onClick={() => handleGoogleLogin()}
+              className="rounded-lg border border-white px-4 py-1 text-white transition-colors hover:bg-white/10"
+            >
+              Login
+            </button>
           )}
         </div>
+
+        {mobileMenuOpen && (
+          <div className="absolute left-0 right-0 top-full z-50 border-t border-zinc-800 bg-zinc-900 p-4 md:hidden">
+            <div className="flex flex-col items-center space-y-4">
+              {user ? (
+                <>
+                  <div className="text-center text-white">
+                    {user.user_metadata.full_name}
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full rounded-lg border border-white px-4 py-1 text-white transition-colors hover:bg-white/10"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => handleGoogleLogin()}
+                  className="w-full rounded-lg border border-white px-4 py-1 text-white transition-colors hover:bg-white/10"
+                >
+                  Login
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   )

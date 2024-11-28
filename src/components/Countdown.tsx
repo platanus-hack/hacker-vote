@@ -62,7 +62,7 @@ export default function Countdown({
           </Button>
         </Link>
       ) : (
-        <h1 className="rounded-lg border border-yellow p-3 text-center text-3xl tracking-tight text-yellow transition-all duration-300 hover:border-white hover:text-white">
+        <h1 className="rounded-lg border border-yellow p-3 text-center text-lg tracking-tight text-yellow transition-all duration-300 hover:border-white hover:text-white lg:text-3xl">
           {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{' '}
           {timeLeft.seconds}s left to vote!
         </h1>

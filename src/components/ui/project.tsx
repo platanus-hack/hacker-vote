@@ -237,17 +237,17 @@ export function Project({ project }: { project: ProjectProps }) {
   }
 
   return (
-    <div className="zinc-900 flex flex-col items-center">
-      <div className="flex w-[42rem] flex-col gap-8">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+    <div className="zinc-900 flex flex-col items-center px-4 lg:px-0">
+      <div className="flex w-full flex-col gap-8 lg:w-[42rem]">
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
             <Avatar className="h-16 w-16">
               <AvatarImage src={logoUrl} alt={projectName} />
               <AvatarFallback>{projectName.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="space-y-2">
               <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-                <h1 className="text-2xl font-bold">{projectName}</h1>
+                <h1 className="text-xl font-bold sm:text-2xl">{projectName}</h1>
                 <Badge
                   variant="outline"
                   className="zinc-900/40 hidden border-zinc-700 text-white sm:inline-flex"
@@ -258,7 +258,7 @@ export function Project({ project }: { project: ProjectProps }) {
 
               <Badge
                 variant="outline"
-                className="zinc-900/40 border-zinc-700 text-white sm:hidden"
+                className="zinc-900/40 w-fit border-zinc-700 text-white sm:hidden"
               >
                 {projectTrack}
               </Badge>
@@ -267,7 +267,7 @@ export function Project({ project }: { project: ProjectProps }) {
             </div>
           </div>
           <div
-            className={`size-36 flex cursor-pointer items-center justify-center rounded-lg border p-4 transition-all duration-300 ${
+            className={`mt-4 flex w-full cursor-pointer items-center justify-center rounded-lg border p-4 transition-all duration-300 sm:mt-0 sm:w-auto ${
               hasVoted
                 ? 'border-yellow text-yellow'
                 : 'border-zinc-800 text-zinc-400 hover:border-yellow hover:text-yellow'
@@ -294,14 +294,14 @@ export function Project({ project }: { project: ProjectProps }) {
 
         <div className="flex flex-wrap justify-center gap-4">
           {project.hackers.map((hacker, index) => (
-            <div key={index} className="flex w-64 flex-col">
+            <div key={index} className="flex w-full flex-col sm:w-64">
               <HackerCard hacker={hacker} />
             </div>
           ))}
         </div>
 
         <div className="prose prose-zinc prose-invert w-full text-justify leading-relaxed text-zinc-300">
-          <Markdown className="w-[42rem]" remarkPlugins={[remarkGfm]}>
+          <Markdown className="w-full lg:w-[42rem]" remarkPlugins={[remarkGfm]}>
             {projectDescription}
           </Markdown>
         </div>

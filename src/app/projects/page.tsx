@@ -63,7 +63,7 @@ export default async function Projects() {
       </div>
 
       <div className="flex justify-center">
-        <div className="grid max-w-5xl grid-cols-1 place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="container grid max-w-5xl grid-cols-1 place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {projectsToShow?.map((project) => (
             <Card
               key={project.id}
