@@ -8,6 +8,12 @@ import ReactQueryProvider from '@/providers/ReactQueryProvider'
 import Navbar from '@/components/Navbar'
 import { Toaster } from 'react-hot-toast'
 
+export const metadata = {
+  title: 'Platanus Hack Voting',
+  description:
+    'platanus hack voting. vote for your favorite projects. the most voted project will win a prize.',
+}
+
 const oxanium = Oxanium({
   weight: ['400', '500'],
   subsets: ['latin'],
