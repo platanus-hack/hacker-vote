@@ -9,12 +9,16 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
 
+  const redirectToParam = requestUrl.searchParams.get('redirect_to')
+
+  console.log('redirectToParam', redirectToParam?.toString())
+  const redirectTo = new URL(redirectToParam || requestUrl.origin, request.url)
+
   if (code) {
     const cookieStore = cookies()
     const supabase = createServerClient(cookieStore)
     await supabase.auth.exchangeCodeForSession(code)
   }
 
-  // URL to redirect to after sign in process completes
-  return NextResponse.redirect(requestUrl.origin)
+  return NextResponse.redirect(redirectTo)
 }

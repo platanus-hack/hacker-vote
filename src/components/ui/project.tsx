@@ -9,6 +9,7 @@ import { HackerCard } from '@/components/ui/hackercard'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import LoginModal from '@/components/LoginModal'
+import toast from 'react-hot-toast'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
@@ -42,29 +43,50 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 
 interface ProjectProps {
   project_id: number
-  project_name: string
-  logo_url: string
-  oneliner: string
+  project_name: string | null
+  logo_url: string | null
+  oneliner: string | null
+  slug: string | null
   hackers: Array<{
     name: string
     avatar_url: string
     github_url?: string
     linkedin_url?: string
   }>
-  demo_url: string
-  track: string
-  description: string
+  demo_url: string | null
+  track: string | null
+  description: string | null
 }
 
-function getYouTubeEmbedUrl(url: string): string {
-  const videoIdMatch = url.match(
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/,
-  )
-  return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : url
+function getYouTubeEmbedUrl(url: string | null): string {
+  if (!url) return ''
+
+  try {
+    const videoId = url.split('v=')[1]?.split('&')[0]
+    const timeMatch = url.match(/[?&]t=(\d+)s/)
+    const startTime = timeMatch ? timeMatch[1] : ''
+
+    if (!videoId) {
+      console.warn('Could not extract video ID from URL:', url)
+      return ''
+    }
+
+    return `https://www.youtube.com/embed/${videoId}${startTime ? `?start=${startTime}` : ''}`
+  } catch (error) {
+    console.error('Error processing YouTube URL:', error)
+    return ''
+  }
 }
 
 export function Project({ project }: { project: ProjectProps }) {
   const embedUrl = getYouTubeEmbedUrl(project.demo_url)
+  const logoUrl = project.logo_url || '/placeholder.svg'
+  const projectName = project.project_name || 'Unknown Project'
+  const projectTrack = project.track || 'No Track'
+  const projectOneliner = project.oneliner || 'No description available.'
+  const projectDescription =
+    project.description || 'No detailed description available.'
+  const projectSlug = project.slug || ''
 
   const supabase = createBrowserClient()
   const [upvotes, setUpvotes] = useState<number>(0)
@@ -164,8 +186,24 @@ export function Project({ project }: { project: ProjectProps }) {
       if (!error) {
         setHasVoted(false)
         setUpvotes((prev) => prev - 1)
+        toast.success('Vote removed!', {
+          icon: '',
+          style: {
+            background: '#27272a',
+            color: '#fff',
+            border: '1px solid #3f3f46',
+          },
+          duration: 2000,
+        })
       } else {
         console.error('Error deleting vote:', error)
+        toast.error('Failed to remove vote', {
+          style: {
+            background: '#27272a',
+            color: '#fff',
+            border: '1px solid #3f3f46',
+          },
+        })
       }
     } else {
       const { error } = await supabase.from('upvote').insert({
@@ -176,86 +214,103 @@ export function Project({ project }: { project: ProjectProps }) {
       if (!error) {
         setHasVoted(true)
         setUpvotes((prev) => prev + 1)
+        toast.success('Vote added!', {
+          icon: '⭐',
+          style: {
+            background: '#27272a',
+            color: '#fff',
+            border: '1px solid #3f3f46',
+          },
+          duration: 2000,
+        })
       } else {
         console.error('Error inserting vote:', error)
+        toast.error('Failed to add vote', {
+          style: {
+            background: '#27272a',
+            color: '#fff',
+            border: '1px solid #3f3f46',
+          },
+        })
       }
     }
   }
 
   return (
-    <div className="zinc-900 space-y-8">
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={project.logo_url} alt={project.project_name} />
-            <AvatarFallback>{project.project_name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div className="space-y-2">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-              <h1 className="text-2xl font-bold">{project.project_name}</h1>
+    <div className="zinc-900 flex flex-col items-center">
+      <div className="flex w-[42rem] flex-col gap-8">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={logoUrl} alt={projectName} />
+              <AvatarFallback>{projectName.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div className="space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                <h1 className="text-2xl font-bold">{projectName}</h1>
+                <Badge
+                  variant="outline"
+                  className="zinc-900/40 hidden border-zinc-700 text-white sm:inline-flex"
+                >
+                  {projectTrack}
+                </Badge>
+              </div>
+
               <Badge
                 variant="outline"
-                className="zinc-900/40 hidden border-zinc-700 text-white sm:inline-flex"
+                className="zinc-900/40 border-zinc-700 text-white sm:hidden"
               >
-                {project.track}
+                {projectTrack}
               </Badge>
+
+              <p className="w-full text-sm text-zinc-400">{projectOneliner}</p>
             </div>
-
-            <Badge
-              variant="outline"
-              className="zinc-900/40 border-zinc-700 text-white sm:hidden"
-            >
-              {project.track}
-            </Badge>
-
-            <p className="max-w-xl text-zinc-400">{project.oneliner}</p>
+          </div>
+          <div
+            className={`size-36 flex cursor-pointer items-center justify-center rounded-lg border p-4 transition-all duration-300 ${
+              hasVoted
+                ? 'border-yellow text-yellow'
+                : 'border-zinc-800 text-zinc-400 hover:border-yellow hover:text-yellow'
+            } ${isVoteDeadlinePassed ? 'cursor-not-allowed opacity-50' : ''}`}
+            onClick={isVoteDeadlinePassed ? undefined : handleVote}
+          >
+            <span className="text-2xl font-bold">{upvotes}</span>
+            <span className="ml-1">▲</span>
           </div>
         </div>
-        <div
-          className={`cursor-pointer rounded-lg border p-4 transition-all duration-300 ${
-            hasVoted
-              ? 'border-yellow text-yellow'
-              : 'border-zinc-800 text-zinc-400 hover:border-yellow hover:text-yellow'
-          } ${isVoteDeadlinePassed ? 'cursor-not-allowed opacity-50' : ''}`}
-          onClick={isVoteDeadlinePassed ? undefined : handleVote}
-        >
-          <span className="text-2xl font-bold">{upvotes}</span>
-          <span className="ml-1">▲</span>
-        </div>
-      </div>
 
-      {project.demo_url && (
-        <div className="aspect-video w-full overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800/50">
-          <iframe
-            src={embedUrl}
-            className="h-full w-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
-      )}
-
-      <div className="flex flex-wrap justify-center gap-4">
-        {project.hackers.map((hacker, index) => (
-          <div key={index} className="flex w-64 flex-col">
-            <HackerCard hacker={hacker} />
+        {embedUrl && (
+          <div className="aspect-video w-full overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800/50">
+            <iframe
+              src={embedUrl}
+              className="h-full w-full"
+              title={`${projectName} Demo Video`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
           </div>
-        ))}
-      </div>
+        )}
 
-      <div className="prose prose-zinc prose-invert text-justify leading-relaxed text-zinc-300">
-        <Markdown remarkPlugins={[remarkGfm]}>{project.description}</Markdown>
+        <div className="flex flex-wrap justify-center gap-4">
+          {project.hackers.map((hacker, index) => (
+            <div key={index} className="flex w-64 flex-col">
+              <HackerCard hacker={hacker} />
+            </div>
+          ))}
+        </div>
+
+        <div className="prose prose-zinc prose-invert w-full text-justify leading-relaxed text-zinc-300">
+          <Markdown className="w-[42rem]" remarkPlugins={[remarkGfm]}>
+            {projectDescription}
+          </Markdown>
+        </div>
+        <LoginModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          redirectPath={`/projects/${projectSlug}`}
+        />
       </div>
-      <LoginModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onLogin={async () => {
-          const {
-            data: { session },
-          } = await supabase.auth.getSession()
-          setUser(session?.user || null)
-        }}
-      />
     </div>
   )
 }

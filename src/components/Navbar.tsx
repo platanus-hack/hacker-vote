@@ -53,22 +53,29 @@ const Navbar = () => {
     }
   }, [dropdownVisible])
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    router.push('/')
+    router.refresh()
+  }
+
   return (
-    <nav className="p-4">
-      <div className="container mx-auto flex flex-col items-center justify-between gap-4 sm:flex-row">
+    <nav className="flex justify-center py-4">
+      <div className="container flex w-full max-w-5xl justify-between">
         <div
           className="text-lg font-bold"
           style={{ fontFamily: 'var(--font-oxanium)' }}
         >
           <Link
             href="/"
+            onClick={handleLogoClick}
             className="text-white transition-colors hover:text-gray-300"
           >
             <span className="font-light text-white">platanus hack</span>{' '}
-            <span className="text-white">| voting</span>
+            <span className="text-white">| voting ☝️</span>
           </Link>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center">
           {user ? (
             <div className="dropdown relative">
               <button
@@ -90,7 +97,7 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <button onClick={handleGoogleLogin}>Login</button>
+            <button onClick={() => handleGoogleLogin()}>Login</button>
           )}
         </div>
       </div>

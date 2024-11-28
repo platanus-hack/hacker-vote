@@ -14,7 +14,7 @@ export default async function Component({
   const { data: project, error } = await supabase
     .from('projects')
     .select(
-      'project_id, project_name, logo_url, oneliner, description, demo_url, track, hackers(full_name, github_url, linkedin_url)',
+      'project_id, project_name, logo_url, slug, oneliner, description, demo_url, track, hackers(full_name, github_url, linkedin_url)',
     )
     .eq('slug', params.slug)
     .single()
@@ -27,6 +27,7 @@ export default async function Component({
   const formattedProject = {
     project_id: project.project_id || 'Unknown ID',
     project_name: project.project_name || 'Unknown Project',
+    slug: project.slug || 'Unknown Slug',
     logo_url: project.logo_url || '/placeholder.svg',
     oneliner: project.oneliner || 'No description available.',
     hackers: (project.hackers || []).map((hacker) => ({

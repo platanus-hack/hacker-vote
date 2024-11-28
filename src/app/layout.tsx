@@ -6,6 +6,7 @@ import './globals.css'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
 import Navbar from '@/components/Navbar'
+import { Toaster } from 'react-hot-toast'
 
 const oxanium = Oxanium({
   weight: ['400', '500'],
@@ -52,6 +53,7 @@ export default function RootLayout({
             <ReactQueryDevtools initialIsOpen={false} />
           </ReactQueryProvider>
         </ThemeProvider>
+        <Toaster position="bottom-center" />
       </body>
     </html>
   )

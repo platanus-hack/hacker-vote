@@ -1,7 +1,6 @@
 import { createServerClient } from '@/utils/supabase'
 import { cookies } from 'next/headers'
 import * as React from 'react'
-import Image from 'next/image'
 import {
   Card,
   CardHeader,
@@ -9,6 +8,7 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/ui/card'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import Countdown from '@/components/Countdown'
 import { getInitialTimeLeft } from '@/components/CountdownServer'
 
@@ -47,6 +47,10 @@ export default async function Projects() {
     }
   }
 
+  projectsToShow = (projectsToShow || []).sort((a, b) =>
+    a.project_name.localeCompare(b.project_name),
+  )
+
   const { timeLeft, isVotingEnded } = getInitialTimeLeft()
 
   return (
@@ -59,26 +63,32 @@ export default async function Projects() {
       </div>
 
       <div className="flex justify-center">
-        <div className="grid max-w-[1400px] grid-cols-1 place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid max-w-5xl grid-cols-1 place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {projectsToShow?.map((project) => (
             <Card
               key={project.id}
-              className="flex h-64 w-64 flex-col"
+              className="flex h-60 w-60 flex-col"
               voted={project.voted}
               href={`/projects/${project.slug}`}
             >
               <CardHeader>
-                <Image
-                  src={project.logo_url}
-                  alt={project.name || 'Project logo'}
-                  width={64}
-                  height={64}
-                  className="h-24 w-24 rounded-full object-cover"
-                />
+                <Avatar className="h-24 w-24">
+                  <AvatarImage
+                    src={project.logo_url || '/placeholder.svg'}
+                    alt={project.project_name || 'Project logo'}
+                  />
+                  <AvatarFallback>
+                    {(project.project_name || 'P').charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
               </CardHeader>
               <CardContent>
-                <CardTitle>{project.project_name}</CardTitle>
-                <CardDescription>{project.oneliner}</CardDescription>
+                <CardTitle className="text-xl">
+                  {project.project_name || 'Unknown Project'}
+                </CardTitle>
+                <CardDescription>
+                  {project.oneliner || 'No description available.'}
+                </CardDescription>
               </CardContent>
             </Card>
           ))}

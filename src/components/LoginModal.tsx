@@ -1,50 +1,67 @@
+'use client'
+import { useEffect, useState } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 import { handleGoogleLogin } from '@/utils/session'
 
 interface LoginModalProps {
   isOpen: boolean
   onClose: () => void
-  onLogin?: () => Promise<void>
+  redirectPath?: string
 }
 
-export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
-  const handleModalClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-  }
+export default function LoginModal({
+  isOpen,
+  onClose,
+  redirectPath,
+}: LoginModalProps) {
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
-  if (!isOpen) return null
+  useEffect(() => {
+    if (isOpen) {
+      setIsAnimating(true)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsVisible(true)
+        })
+      })
+    } else {
+      setIsVisible(false)
+      const timer = setTimeout(() => {
+        setIsAnimating(false)
+      }, 300)
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen])
+
+  if (!isAnimating && !isOpen) return null
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      }`}
       onClick={onClose}
     >
+      <div className="absolute inset-0 bg-black/30" />
       <div
-        className="w-full max-w-2xl rounded-lg bg-zinc-900 p-12 shadow-lg"
-        onClick={handleModalClick}
+        className={`relative w-full max-w-sm transform rounded-lg bg-zinc-900 p-6 shadow-xl transition-all duration-300 ${
+          isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+        }`}
+        onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-8 text-center text-3xl font-extrabold text-white">
-          Login Required
-        </h2>
-        <p className="mb-8 text-center text-lg text-white">
-          You need to log in to vote.
+        <h2 className="text-lg font-medium text-white">Login Required</h2>
+        <p className="mt-2 text-sm text-zinc-400">
+          Please login to vote for this project
         </p>
-        <div className="flex flex-col items-center gap-4">
+
+        <div className="mt-4">
           <button
-            onClick={handleGoogleLogin}
-            className="flex items-center justify-center gap-2 rounded-md bg-white px-6 py-3 text-lg font-semibold text-gray-700 shadow-lg ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            onClick={() => handleGoogleLogin(redirectPath)}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white/75"
           >
-            <FcGoogle className="h-6 w-6" />
+            <FcGoogle className="h-5 w-5" />
             Sign in with Google
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onClose()
-            }}
-            className="mt-4 rounded-md bg-gray-200 px-6 py-3 text-lg font-semibold text-gray-700 hover:bg-gray-300"
-          >
-            Close
           </button>
         </div>
       </div>
