@@ -2,6 +2,37 @@ import { Project } from '@/components/ui/project'
 import { createServerClient } from '@/utils/supabase'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
+
+interface Hacker {
+  full_name?: string
+  github_url?: string
+  linkedin_url?: string
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const cookieStore = cookies()
+  const supabase = createServerClient(cookieStore)
+
+  const { data: project } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('slug', params.slug)
+    .single()
+
+  return {
+    title: `Platanus Hack Voting | ${project?.project_name || 'Project'}`,
+    description: project?.oneliner || 'A Platanus Hack project',
+    openGraph: {
+      title: `Platanus Hack | ${project?.project_name || 'Project'}`,
+      description: project?.oneliner || 'A Platanus Hack project',
+    },
+  }
+}
 
 export default async function Component({
   params,
@@ -28,7 +59,7 @@ export default async function Component({
     slug: project.slug || 'Unknown Slug',
     logo_url: project.logo_url || '/placeholder.svg',
     oneliner: project.oneliner || 'No description available.',
-    hackers: (project.hackers || []).map((hacker) => ({
+    hackers: (project.hackers || []).map((hacker: Hacker) => ({
       name: hacker.full_name || 'Unknown',
       avatar_url: hacker.github_url
         ? `${hacker.github_url}.png`
