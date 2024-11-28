@@ -10,6 +10,8 @@ import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import LoginModal from '@/components/LoginModal'
 import toast from 'react-hot-toast'
+import { IoRocketOutline } from 'react-icons/io5'
+import { FiGithub } from 'react-icons/fi'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
@@ -56,6 +58,8 @@ interface ProjectProps {
   demo_url: string | null
   track: string | null
   description: string | null
+  app_url: string | null
+  repo_url: string | null
 }
 
 function getYouTubeEmbedUrl(url: string | null): string {
@@ -291,6 +295,30 @@ export function Project({ project }: { project: ProjectProps }) {
             />
           </div>
         )}
+        <div className="flex w-full flex-col items-center justify-center gap-4 lg:flex-row">
+          {project.app_url && (
+            <a
+              href={project.app_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-lg border border-zinc-500 px-4 py-2 text-sm text-zinc-200 transition-colors hover:border-yellow hover:text-yellow"
+            >
+              <IoRocketOutline className="h-4 w-4" />
+              go to app
+            </a>
+          )}
+          {project.repo_url && (
+            <a
+              href={project.repo_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-lg border border-zinc-500 px-4 py-2 text-sm text-zinc-200 transition-colors hover:border-yellow hover:text-yellow"
+            >
+              <FiGithub className="h-4 w-4" />
+              see source code
+            </a>
+          )}
+        </div>
 
         <div className="flex flex-wrap justify-center gap-4">
           {project.hackers.map((hacker, index) => (

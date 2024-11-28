@@ -13,9 +13,7 @@ export default async function Component({
 
   const { data: project, error } = await supabase
     .from('projects')
-    .select(
-      'project_id, project_name, logo_url, slug, oneliner, description, demo_url, track, hackers(full_name, github_url, linkedin_url)',
-    )
+    .select('*')
     .eq('slug', params.slug)
     .single()
 
@@ -41,6 +39,8 @@ export default async function Component({
     demo_url: project.demo_url || '',
     track: project.track || 'No Track',
     description: project.description || 'No description available.',
+    app_url: project.app_url || '',
+    repo_url: project.repo_url || '',
   }
 
   return (
