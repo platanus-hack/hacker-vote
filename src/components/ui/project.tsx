@@ -11,7 +11,7 @@ import remarkGfm from 'remark-gfm'
 import LoginModal from '@/components/LoginModal'
 import toast from 'react-hot-toast'
 import { IoRocketOutline } from 'react-icons/io5'
-import { FiGithub } from 'react-icons/fi'
+import { FiGithub, FiShare } from 'react-icons/fi'
 import confetti from 'canvas-confetti'
 
 const badgeVariants = cva(
@@ -270,6 +270,30 @@ export function Project({ project }: { project: ProjectProps }) {
     }
   }
 
+  const handleShare = async () => {
+    try {
+      const currentUrl = window.location.href
+      await navigator.clipboard.writeText(currentUrl)
+      toast.success('Link copied to clipboard!', {
+        icon: '🔗',
+        style: {
+          background: '#27272a',
+          color: '#fff',
+          border: '1px solid #3f3f46',
+        },
+        duration: 2000,
+      })
+    } catch (err) {
+      toast.error('Failed to copy link', {
+        style: {
+          background: '#27272a',
+          color: '#fff',
+          border: '1px solid #3f3f46',
+        },
+      })
+    }
+  }
+
   return (
     <div className="zinc-900 flex flex-col items-center px-4 lg:px-0">
       <div className="flex w-full flex-col gap-8 lg:w-[42rem]">
@@ -282,20 +306,38 @@ export function Project({ project }: { project: ProjectProps }) {
             <div className="space-y-2">
               <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
                 <h1 className="text-xl font-bold sm:text-2xl">{projectName}</h1>
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant="outline"
+                    className="zinc-900/40 hidden border-zinc-700 text-white sm:inline-flex"
+                  >
+                    {projectTrack}
+                  </Badge>
+                  <button
+                    onClick={handleShare}
+                    className="hidden items-center justify-center rounded-full p-1.5 text-zinc-400 transition-colors hover:text-yellow sm:flex"
+                    aria-label="Share project"
+                  >
+                    <FiShare className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
                 <Badge
                   variant="outline"
-                  className="zinc-900/40 hidden border-zinc-700 text-white sm:inline-flex"
+                  className="zinc-900/40 w-fit border-zinc-700 text-white sm:hidden"
                 >
                   {projectTrack}
                 </Badge>
+                <button
+                  onClick={handleShare}
+                  className="flex items-center justify-center rounded-full p-1.5 text-zinc-400 transition-colors hover:text-yellow sm:hidden"
+                  aria-label="Share project"
+                >
+                  <FiShare className="h-4 w-4" />
+                </button>
               </div>
-
-              <Badge
-                variant="outline"
-                className="zinc-900/40 w-fit border-zinc-700 text-white sm:hidden"
-              >
-                {projectTrack}
-              </Badge>
 
               <p className="w-full text-sm text-zinc-400">{projectOneliner}</p>
             </div>
