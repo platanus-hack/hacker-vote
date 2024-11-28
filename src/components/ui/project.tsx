@@ -12,6 +12,7 @@ import LoginModal from '@/components/LoginModal'
 import toast from 'react-hot-toast'
 import { IoRocketOutline } from 'react-icons/io5'
 import { FiGithub } from 'react-icons/fi'
+import confetti from 'canvas-confetti'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
@@ -80,6 +81,34 @@ function getYouTubeEmbedUrl(url: string | null): string {
     console.error('Error processing YouTube URL:', error)
     return ''
   }
+}
+
+function fireConfetti() {
+  const count = 200
+  const defaults = {
+    origin: { y: 0.9 },
+    zIndex: 1000,
+  }
+
+  function fire(particleRatio: number, opts: confetti.Options) {
+    confetti({
+      ...defaults,
+      ...opts,
+      particleCount: Math.floor(count * particleRatio),
+    })
+  }
+
+  fire(0.9, {
+    spread: 80,
+    startVelocity: 55,
+    origin: { x: 0 },
+  })
+
+  fire(0.9, {
+    spread: 80,
+    startVelocity: 55,
+    origin: { x: 1 },
+  })
 }
 
 export function Project({ project }: { project: ProjectProps }) {
@@ -218,6 +247,7 @@ export function Project({ project }: { project: ProjectProps }) {
       if (!error) {
         setHasVoted(true)
         setUpvotes((prev) => prev + 1)
+        fireConfetti()
         toast.success('Vote added!', {
           icon: '⭐',
           style: {

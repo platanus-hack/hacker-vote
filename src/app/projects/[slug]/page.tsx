@@ -46,7 +46,7 @@ export default async function Component({
   return (
     <>
       <div className="zinc-900 flex min-h-screen flex-col">
-        <div className="flex flex-1 justify-center p-6">
+        <div className="flex flex-1 justify-center p-2 lg:p-6">
           <div className="mx-auto max-w-4xl">
             <Project project={formattedProject} />
           </div>
