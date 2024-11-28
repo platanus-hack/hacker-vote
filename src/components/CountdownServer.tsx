@@ -1,4 +1,4 @@
-export const TARGET_DATE = '2024-11-30T23:59:59'
+export const TARGET_DATE = '2023-12-08T23:59:59-03:00'
 
 export function getInitialTimeLeft() {
   const targetDate = new Date(TARGET_DATE)
