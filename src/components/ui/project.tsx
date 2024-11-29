@@ -258,8 +258,7 @@ export function Project({ project }: { project: ProjectProps }) {
           duration: 2000,
         })
       } else {
-        console.error('Error inserting vote:', error)
-        toast.error('Failed to add vote', {
+        toast.error(error.message, {
           style: {
             background: '#27272a',
             color: '#fff',
@@ -296,11 +295,15 @@ export function Project({ project }: { project: ProjectProps }) {
 
   return (
     <div className="zinc-900 flex flex-col items-center px-4 lg:px-0">
-      <div className="flex w-full flex-col gap-8 lg:w-[42rem]">
+      <div className="flex w-full flex-col gap-8 lg:max-w-[42rem]">
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={logoUrl} alt={projectName} />
+            <Avatar className="relative h-16 w-16">
+              <AvatarImage
+                src={logoUrl}
+                alt={projectName}
+                className="object-cover"
+              />
               <AvatarFallback>{projectName.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="space-y-2">
@@ -400,8 +403,11 @@ export function Project({ project }: { project: ProjectProps }) {
           ))}
         </div>
 
-        <div className="prose prose-zinc prose-invert w-full text-justify leading-relaxed text-zinc-300">
-          <Markdown className="w-full lg:w-[42rem]" remarkPlugins={[remarkGfm]}>
+        <div className="prose prose-zinc prose-invert max-w-none text-justify leading-relaxed text-zinc-300">
+          <Markdown
+            className="[&_code]:text-sm [&_pre]:relative [&_pre]:max-w-[calc(100vw-2rem)] [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-zinc-800/50 [&_pre]:p-4 lg:[&_pre]:max-w-[42rem] [&_pre_code]:block"
+            remarkPlugins={[remarkGfm]}
+          >
             {projectDescription}
           </Markdown>
         </div>

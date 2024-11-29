@@ -72,10 +72,11 @@ export default async function Projects() {
               href={`/projects/${project.slug}`}
             >
               <CardHeader>
-                <Avatar className="h-24 w-24">
+                <Avatar className="relative h-24 w-24">
                   <AvatarImage
                     src={project.logo_url || '/placeholder.svg'}
                     alt={project.project_name || 'Project logo'}
+                    className="object-cover"
                   />
                   <AvatarFallback>
                     {(project.project_name || 'P').charAt(0)}
