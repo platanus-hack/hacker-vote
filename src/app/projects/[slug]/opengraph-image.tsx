@@ -12,8 +12,6 @@ export default async function opengraphImage({
 
   const slug = (await params).slug
 
-  console.log('Fetching project for slug:', slug)
-
   const { data: project, error: projectError } = await supabase
     .from('projects')
     .select('project_name, oneliner, logo_url, project_id')

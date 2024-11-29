@@ -4,12 +4,6 @@ import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 
-interface Hacker {
-  full_name?: string
-  github_url?: string
-  linkedin_url?: string
-}
-
 export async function generateMetadata({
   params,
 }: {
@@ -42,15 +36,25 @@ export default async function Component({
   const cookieStore = cookies()
   const supabase = createServerClient(cookieStore)
 
-  const { data: project, error } = await supabase
+  // First, get the project
+  const { data: project, error: projectError } = await supabase
     .from('projects')
     .select('*')
     .eq('slug', params.slug)
     .single()
 
-  if (!project || error) {
-    console.error('Error fetching project:', error)
+  if (!project || projectError) {
+    console.error('Error fetching project:', projectError)
     notFound()
+  }
+
+  const { data: hackers, error: hackersError } = await supabase
+    .from('hackers')
+    .select('full_name, github_url, linkedin_url')
+    .eq('project_id', project.project_id)
+
+  if (hackersError) {
+    console.error('Error fetching hackers:', hackersError)
   }
 
   const formattedProject = {
@@ -59,7 +63,7 @@ export default async function Component({
     slug: project.slug || 'Unknown Slug',
     logo_url: project.logo_url || '/placeholder.svg',
     oneliner: project.oneliner || 'No description available.',
-    hackers: (project.hackers || []).map((hacker: Hacker) => ({
+    hackers: (hackers || []).map((hacker) => ({
       name: hacker.full_name || 'Unknown',
       avatar_url: hacker.github_url
         ? `${hacker.github_url}.png`

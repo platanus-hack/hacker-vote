@@ -177,8 +177,6 @@ export function Project({ project }: { project: ProjectProps }) {
           .eq('project_id', project.project_id)
           .eq('user_uid', session.user.id)
 
-        console.log('userVote', userVote)
-
         if (!userVoteError && userVote && userVote.length > 0) {
           setHasVoted(true)
         } else {
@@ -395,11 +393,9 @@ export function Project({ project }: { project: ProjectProps }) {
           )}
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-3">
           {project.hackers.map((hacker, index) => (
-            <div key={index} className="flex w-full flex-col sm:w-64">
-              <HackerCard hacker={hacker} />
-            </div>
+            <HackerCard key={index} hacker={hacker} />
           ))}
         </div>
 
