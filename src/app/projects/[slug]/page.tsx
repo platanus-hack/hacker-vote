@@ -36,10 +36,15 @@ export default async function Component({
   const cookieStore = cookies()
   const supabase = createServerClient(cookieStore)
 
-  // First, get the project
+  // Get the project with vote count
   const { data: project, error: projectError } = await supabase
     .from('projects')
-    .select('*')
+    .select(
+      `
+      *,
+      project_upvote_count!project_id(upvote_count)
+    `,
+    )
     .eq('slug', params.slug)
     .single()
 
@@ -63,6 +68,7 @@ export default async function Component({
     slug: project.slug || 'Unknown Slug',
     logo_url: project.logo_url || '/placeholder.svg',
     oneliner: project.oneliner || 'No description available.',
+    initial_vote_count: project.project_upvote_count?.[0]?.upvote_count || 0,
     hackers: (hackers || []).map((hacker) => ({
       name: hacker.full_name || 'Unknown',
       avatar_url: hacker.github_url

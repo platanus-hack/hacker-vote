@@ -2,31 +2,16 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { createBrowserClient } from '@/utils/supabase'
 import { useRouter } from 'next/navigation'
 import { HiChevronDown, HiBars3, HiXMark } from 'react-icons/hi2'
 import { handleGoogleLogin } from '@/utils/session'
+import { useSession } from '@/hooks/useSession'
 
 const Navbar = () => {
-  const [user, setUser] = useState<any>(null)
   const [dropdownVisible, setDropdownVisible] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const supabase = createBrowserClient()
   const router = useRouter()
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [supabase])
+  const { user, supabase } = useSession()
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()

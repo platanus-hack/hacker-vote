@@ -13,6 +13,7 @@ import toast from 'react-hot-toast'
 import { IoRocketOutline } from 'react-icons/io5'
 import { FiGithub, FiShare } from 'react-icons/fi'
 import confetti from 'canvas-confetti'
+import { useSession } from '@/hooks/useSession'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
@@ -50,6 +51,7 @@ interface ProjectProps {
   logo_url: string | null
   oneliner: string | null
   slug: string | null
+  initial_vote_count: number
   hackers: Array<{
     name: string
     avatar_url: string
@@ -112,6 +114,7 @@ function fireConfetti() {
 }
 
 export function Project({ project }: { project: ProjectProps }) {
+  const { user, supabase } = useSession()
   const embedUrl = getYouTubeEmbedUrl(project.demo_url)
   const logoUrl = project.logo_url || '/placeholder.svg'
   const projectName = project.project_name || 'Unknown Project'
@@ -121,9 +124,7 @@ export function Project({ project }: { project: ProjectProps }) {
     project.description || 'No detailed description available.'
   const projectSlug = project.slug || ''
 
-  const supabase = createBrowserClient()
-  const [upvotes, setUpvotes] = useState<number>(0)
-  const [user, setUser] = useState<any>(null)
+  const [upvotes, setUpvotes] = useState<number>(project.initial_vote_count)
   const [hasVoted, setHasVoted] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isVoteDeadlinePassed, setIsVoteDeadlinePassed] = useState(false)
@@ -137,7 +138,6 @@ export function Project({ project }: { project: ProjectProps }) {
 
       if (error) {
         console.error('Error fetching vote deadline:', error)
-        console.error()
         return
       }
 
@@ -151,55 +151,46 @@ export function Project({ project }: { project: ProjectProps }) {
 
   useEffect(() => {
     const fetchVotes = async () => {
-      const { data: votes, error } = await supabase
-        .from('project_upvote_count')
-        .select('upvote_count')
-        .eq('project_id', project.project_id)
-
-      const upvoteData = votes?.[0]
-
-      if (!error && upvoteData) {
-        setUpvotes(upvoteData.upvote_count)
-      } else if (error) {
-        console.error('Error fetching votes:', error)
+      if (!user) {
+        setHasVoted(false)
+        return
       }
 
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
+      const { data: userVote, error: userVoteError } = await supabase
+        .from('upvote')
+        .select('id')
+        .eq('project_id', project.project_id)
+        .eq('user_uid', user.id)
 
-      setUser(session?.user || null)
+      if (!userVoteError && userVote && userVote.length > 0) {
+        setHasVoted(true)
+      } else {
+        setHasVoted(false)
+      }
 
-      if (session?.user) {
-        const { data: userVote, error: userVoteError } = await supabase
-          .from('upvote')
-          .select('id')
-          .eq('project_id', project.project_id)
-          .eq('user_uid', session.user.id)
+      const channel = supabase
+        .channel(`project_${project.project_id}_votes`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'project_upvote_count',
+            filter: `project_id=eq.${project.project_id}`,
+          },
+          (payload: any) => {
+            setUpvotes(payload.new.upvote_count)
+          },
+        )
+        .subscribe()
 
-        if (!userVoteError && userVote && userVote.length > 0) {
-          setHasVoted(true)
-        } else {
-          setHasVoted(false)
-        }
+      return () => {
+        supabase.removeChannel(channel)
       }
     }
 
     fetchVotes()
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user || null)
-        if (!session?.user) {
-          setHasVoted(false)
-        }
-      },
-    )
-
-    return () => {
-      authListener?.subscription.unsubscribe()
-    }
-  }, [project.project_id, supabase])
+  }, [project.project_id, supabase, user])
 
   const handleVote = async () => {
     if (!user) {

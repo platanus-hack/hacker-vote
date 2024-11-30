@@ -1,32 +1,11 @@
 'use client'
 
-import { createBrowserClient } from '@/utils/supabase'
+import { useSession } from '@/hooks/useSession'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
 export default function AuthButton() {
   const router = useRouter()
-  const supabase = createBrowserClient()
-  const [user, setUser] = useState<any>(null)
-
-  useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      setUser(user)
-    }
-
-    getUser()
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [supabase])
+  const { user, supabase } = useSession()
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
