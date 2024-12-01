@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react'
 import './globals.css'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
+import { PostHogProvider } from '@/providers/PostHogProvider'
 import Navbar from '@/components/Navbar'
 import { Toaster } from 'react-hot-toast'
 
@@ -50,14 +51,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ReactQueryProvider>
-            <Navbar />
-            <main className="zinc-900 flex min-h-screen flex-col items-center">
-              {children}
-              <Analytics />
-            </main>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </ReactQueryProvider>
+          <PostHogProvider>
+            <ReactQueryProvider>
+              <Navbar />
+              <main className="zinc-900 flex min-h-screen flex-col items-center">
+                {children}
+                <Analytics />
+              </main>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </ReactQueryProvider>
+          </PostHogProvider>
         </ThemeProvider>
         <Toaster position="bottom-center" />
       </body>
