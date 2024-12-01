@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { HiChevronDown, HiBars3, HiXMark } from 'react-icons/hi2'
 import { handleGoogleLogin } from '@/utils/session'
 import { useSession } from '@/hooks/useSession'
@@ -11,6 +11,7 @@ const Navbar = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
   const { user, supabase } = useSession()
 
   const handleSignOut = async () => {
@@ -95,7 +96,7 @@ const Navbar = () => {
             </div>
           ) : (
             <button
-              onClick={() => handleGoogleLogin()}
+              onClick={() => handleGoogleLogin(pathname)}
               className="rounded-lg border border-white px-4 py-1 text-white transition-colors hover:bg-white/10"
             >
               Login
