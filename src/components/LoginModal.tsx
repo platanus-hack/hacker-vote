@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 import { handleGoogleLogin } from '@/utils/session'
+import toast from 'react-hot-toast'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -51,7 +52,15 @@ export default function LoginModal({
     navigator.clipboard
       .writeText(cleanUrl)
       .then(() => {
-        alert('Link copied! Please open in another browser to login.')
+        toast.success('Link copied! Please open in another browser to login.', {
+          icon: '🔗',
+          style: {
+            background: '#27272a',
+            color: '#fff',
+            border: '1px solid #3f3f46',
+          },
+          duration: 2000,
+        })
       })
       .catch((err) => {
         console.error('Failed to copy link:', err)
