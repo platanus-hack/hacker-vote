@@ -16,12 +16,13 @@ export default function LoginModal({
 }: LoginModalProps) {
   const [isAnimating, setIsAnimating] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  const [isInstagram, setIsInstagram] = useState(false)
+  const [isUnsupportedBrowser, setIsUnsupportedBrowser] = useState(false)
 
   useEffect(() => {
-    // Detect Instagram browser
     const userAgent = window.navigator.userAgent.toLowerCase()
-    setIsInstagram(userAgent.includes('instagram'))
+    setIsUnsupportedBrowser(
+      userAgent.includes('instagram') || userAgent.includes('linkedin'),
+    )
   }, [])
 
   useEffect(() => {
@@ -42,9 +43,13 @@ export default function LoginModal({
   }, [isOpen])
 
   const handleCopyLink = () => {
-    const currentUrl = window.location.href
+    const url = new URL(window.location.href)
+    url.search = ''
+
+    const cleanUrl = url.toString()
+
     navigator.clipboard
-      .writeText(currentUrl)
+      .writeText(cleanUrl)
       .then(() => {
         alert('Link copied! Please open in another browser to login.')
       })
@@ -70,11 +75,11 @@ export default function LoginModal({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-lg font-medium text-white">Login Required</h2>
-        {isInstagram ? (
+        {isUnsupportedBrowser ? (
           <>
             <p className="mt-2 text-sm text-zinc-400">
-              Instagram browser does not support Google login. Please copy the
-              link and open it in another browser.
+              This browser does not support Google login. Please copy the link
+              and open it in another browser.
             </p>
             <div className="mt-4">
               <button
