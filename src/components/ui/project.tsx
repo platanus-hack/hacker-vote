@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createBrowserClient } from '@/utils/supabase'
+import confetti from 'canvas-confetti'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/tailwind'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -12,7 +12,7 @@ import LoginModal from '@/components/LoginModal'
 import toast from 'react-hot-toast'
 import { IoRocketOutline } from 'react-icons/io5'
 import { FiGithub, FiShare } from 'react-icons/fi'
-import confetti from 'canvas-confetti'
+import { TARGET_DATE } from '@/components/CountdownServer'
 import { useSession } from '@/hooks/useSession'
 
 const badgeVariants = cva(
@@ -152,7 +152,7 @@ export function Project({ project }: { project: ProjectProps }) {
   const logoUrl = project.logo_url || '/placeholder.svg'
   const projectName = project.project_name || 'Unknown Project'
   const projectTrack = project.track || 'No Track'
-  const projectOneliner = project.oneliner || 'No description available.'
+  const projectOneliner = project.oneliner || 'No ´description available.'
   const projectDescription =
     project.description || 'No detailed description available.'
   const projectSlug = project.slug || ''
@@ -160,27 +160,9 @@ export function Project({ project }: { project: ProjectProps }) {
   const [upvotes, setUpvotes] = useState<number>(project.initial_vote_count)
   const [hasVoted, setHasVoted] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isVoteDeadlinePassed, setIsVoteDeadlinePassed] = useState(false)
-
-  useEffect(() => {
-    const fetchVoteDeadline = async () => {
-      const { data, error } = await supabase
-        .from('misc')
-        .select('deadline')
-        .single()
-
-      if (error) {
-        console.error('Error fetching vote deadline:', error)
-        return
-      }
-
-      const deadline = new Date(data.deadline)
-      const now = new Date()
-      setIsVoteDeadlinePassed(now > deadline)
-    }
-
-    fetchVoteDeadline()
-  }, [supabase])
+  const [isVoteDeadlinePassed, setIsVoteDeadlinePassed] = useState(
+    new Date() > new Date(TARGET_DATE),
+  )
 
   useEffect(() => {
     const fetchVotes = async () => {
@@ -226,6 +208,18 @@ export function Project({ project }: { project: ProjectProps }) {
   }, [project.project_id, supabase, user])
 
   const handleVote = async () => {
+    if (isVoteDeadlinePassed) {
+      toast.error('Voting period has ended!', {
+        style: {
+          background: '#27272a',
+          color: '#fff',
+          border: '1px solid #3f3f46',
+        },
+        duration: 2000,
+      })
+      return
+    }
+
     if (!user) {
       setIsModalOpen(true)
       return
@@ -376,7 +370,7 @@ export function Project({ project }: { project: ProjectProps }) {
                   ? pulseVariants.voted.border
                   : `${pulseVariants.notVoted.base} ${pulseVariants.notVoted.animation}`
             }`}
-            onClick={isVoteDeadlinePassed ? undefined : handleVote}
+            onClick={handleVote}
           >
             <span className="text-2xl font-bold">{upvotes}</span>
             <span className="ml-1">▲</span>
