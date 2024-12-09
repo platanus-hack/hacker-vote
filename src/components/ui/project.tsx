@@ -113,6 +113,39 @@ function fireConfetti() {
   })
 }
 
+const pulseVariants = {
+  voted: {
+    border: 'border-yellow text-yellow',
+  },
+  notVoted: {
+    base: 'border-zinc-800 text-zinc-400 hover:border-yellow hover:text-yellow',
+    animation:
+      'animate-[vote-pulse_2s_ease-in-out_infinite] hover:animate-none',
+  },
+  disabled: {
+    base: 'cursor-not-allowed opacity-50',
+  },
+}
+
+const pulseStyle = `
+  @keyframes vote-pulse {
+    0%, 100% { 
+      border-color: rgb(161 161 170);
+      color: rgb(161 161 170);
+      transform: scale(1);
+    }
+    50% { 
+      border-color: #FFFFFF;
+      color: #FFFFFF;
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-[vote-pulse_2s_ease-in-out_infinite] {
+    animation: vote-pulse 2s ease-in-out infinite;
+  }
+`
+
 export function Project({ project }: { project: ProjectProps }) {
   const { user, supabase } = useSession()
   const embedUrl = getYouTubeEmbedUrl(project.demo_url)
@@ -284,6 +317,7 @@ export function Project({ project }: { project: ProjectProps }) {
 
   return (
     <div className="zinc-900 flex flex-col items-center px-4 lg:px-0">
+      <style>{pulseStyle}</style>
       <div className="flex w-full flex-col gap-8 lg:max-w-[42rem]">
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
@@ -335,11 +369,13 @@ export function Project({ project }: { project: ProjectProps }) {
             </div>
           </div>
           <div
-            className={`mt-4 flex w-full cursor-pointer items-center justify-center rounded-lg border p-4 transition-all duration-300 sm:mt-0 sm:w-auto ${
-              hasVoted
-                ? 'border-yellow text-yellow'
-                : 'border-zinc-800 text-zinc-400 hover:border-yellow hover:text-yellow'
-            } ${isVoteDeadlinePassed ? 'cursor-not-allowed opacity-50' : ''}`}
+            className={`mt-4 flex w-full cursor-pointer items-center justify-center rounded-lg border p-4 transition-colors sm:mt-0 sm:w-auto ${
+              isVoteDeadlinePassed
+                ? pulseVariants.disabled.base
+                : hasVoted
+                  ? pulseVariants.voted.border
+                  : `${pulseVariants.notVoted.base} ${pulseVariants.notVoted.animation}`
+            }`}
             onClick={isVoteDeadlinePassed ? undefined : handleVote}
           >
             <span className="text-2xl font-bold">{upvotes}</span>
