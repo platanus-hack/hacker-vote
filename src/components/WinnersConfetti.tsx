@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 
 export default function WinnersConfetti() {
   useEffect(() => {
-    const duration = 3 * 1000
+    const duration = 10 * 1000
     const animationEnd = Date.now() + duration
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 }
 

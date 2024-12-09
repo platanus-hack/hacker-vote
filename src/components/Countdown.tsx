@@ -55,7 +55,7 @@ export default function Countdown({
       {isVotingEnded ? (
         <Link href="/winners">
           <Button
-            className="border border-primary bg-primary text-primary-foreground hover:bg-primary/90"
+            className="flex items-center gap-2 rounded-lg border border-zinc-500 bg-inherit px-4 py-2 text-sm text-zinc-200 transition-colors hover:border-yellow hover:bg-inherit hover:text-yellow"
             size="lg"
           >
             View Winners 🏆
